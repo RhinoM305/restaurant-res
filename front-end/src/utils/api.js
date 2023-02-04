@@ -51,7 +51,6 @@ async function fetchJson(url, options, onCancel) {
     return Promise.resolve(onCancel);
   }
 }
-
 /**
  * Retrieves all existing reservation.
  * @returns {Promise<[reservation]>}
@@ -66,4 +65,20 @@ export async function listReservations(params, signal) {
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
+}
+
+export async function getAllReservationDates(signal) {
+  const url = new URL(`${API_BASE_URL}/reservations/all`);
+  return await fetchJson(url, { headers, signal }, []);
+}
+
+export async function createReservation(data, signal) {
+  const url = `${API_BASE_URL}/reservations/new`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify(data),
+    signal,
+  };
+  return await fetchJson(url, options, {});
 }

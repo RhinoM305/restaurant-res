@@ -1,3 +1,4 @@
+const { where } = require("../db/connection");
 const knex = require("../db/connection");
 
 const tableName = "reservations";
@@ -15,7 +16,15 @@ function create(reservation) {
     .then((createdRecords) => createdRecords[0]);
 }
 
+function list() {
+  return knex("reservations")
+    .select("reservation_date")
+    .orderBy("reservation_date")
+    .distinct();
+}
+
 module.exports = {
   read,
   create,
+  list,
 };
