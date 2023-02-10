@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { createReservation } from "../utils/api";
 import { useHistory } from "react-router-dom";
+import { today } from "../utils/date-time";
+import ErrorAlert from "../layout/ErrorAlert";
 
 function NewReservation() {
   const [reservationForm, setReservationForm] = useState({
@@ -42,6 +44,7 @@ function NewReservation() {
 
   return (
     <div>
+      <ErrorAlert error={error} />
       <form onSubmit={submitHandler}>
         <div className="form-group">
           <label htmlFor="reservationFirstNameInput">First Name</label>
@@ -49,6 +52,7 @@ function NewReservation() {
             className="form-control"
             id="reservationFirstNameInput"
             placeholder="first name"
+            required
             onChange={(update) =>
               setReservationForm({
                 ...reservationForm,
@@ -61,6 +65,7 @@ function NewReservation() {
             className="form-control"
             id="reservationLastNameInput"
             placeholder="last name"
+            required
             onChange={(update) =>
               setReservationForm({
                 ...reservationForm,
@@ -70,11 +75,11 @@ function NewReservation() {
           />
           <label htmlFor="reservationMobileNumberInput">Mobile Number</label>
           <input
-            type="number"
             className="form-control"
             id="reservationMobileNumberInput"
             placeholder="phone number"
             maxLength="10"
+            required
             onChange={(update) => {
               const formattedPhoneNumber = formatPhoneNumber(
                 update.target.value
@@ -90,7 +95,9 @@ function NewReservation() {
             type="date"
             className="form-control"
             placeholder="YYYY-MM-DD"
+            min={today()}
             pattern="\d{4}-\d{2}-\d{2}"
+            required
             onChange={(update) => {
               setReservationForm({
                 ...reservationForm,
@@ -104,6 +111,7 @@ function NewReservation() {
             className="form-control"
             placeholder="HH:MM"
             pattern="[0-9]{2}:[0-9]{2}"
+            required
             onChange={(update) => {
               setReservationForm({
                 ...reservationForm,
@@ -116,10 +124,11 @@ function NewReservation() {
           </label>
           <input
             type="number"
+            disabled1={true}
             className="form-control"
             max="30"
             min="1"
-            placeholder="1"
+            value={reservationForm.people || 1}
             onChange={(update) => {
               setReservationForm({
                 ...reservationForm,
@@ -128,7 +137,6 @@ function NewReservation() {
             }}
           />
         </div>
-        {/* to={`/dashboard?date=${reservationForm.reservation_date}`} */}
         <button className="btn btn-secondary">Submit</button>
       </form>
     </div>

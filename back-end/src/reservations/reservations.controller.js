@@ -8,6 +8,7 @@ const hasProperties = require("../errors/hasProperties");
 
 // as the name of the function sugests here we use a function (hasProperties) to verify that the listed properties
 // are included in the created reservation
+
 const hasRequiredProperties = hasProperties(
   "first_name",
   "last_name",
@@ -59,6 +60,30 @@ async function reservationExist(req, res, next) {
   }
 }
 
+function hasValidDate(req, res, next) {
+  const { data = {} } = req.body;
+
+  let date = new Date(`${data.reservation_date} ${data.reservation_time} UTC`);
+  // today is set to the open time of the restaurant
+  // restaurant opens at 10am est time but needs to be converted to UTC time.
+  let today = new Date(`${formatDateNow()} 15:00:00 UTC`);
+  console.log("compare:", today, "with", date);
+  if (date >= today && data.reservation_time < "05:00:00") {
+    // date + 1 to allign date with western hemisphere date, if confused lookup getDay() returns wrong value
+    if (date + 1 == 2) {
+      next({
+        status: 400,
+        message: `We are not open on tuesdays!`,
+      });
+    } else console.log("next");
+  } else {
+    next({
+      status: 400,
+      message: `We are not open at ${data.reservation_time}`,
+    });
+  }
+}
+
 async function create(req, res) {
   const newCreation = await service.create(req.body.data);
   res.status(201).json({ newCreation });
@@ -78,6 +103,7 @@ module.exports = {
   create: [
     hasOnlyValidProperties,
     hasRequiredProperties,
+    hasValidDate,
     asyncErrorBoundary(create),
   ],
   read: [asyncErrorBoundary(reservationExist), asyncErrorBoundary(read)],
