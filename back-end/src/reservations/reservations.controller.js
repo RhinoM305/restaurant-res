@@ -62,25 +62,77 @@ async function reservationExist(req, res, next) {
 
 function hasValidDate(req, res, next) {
   const { data = {} } = req.body;
-
-  let date = new Date(`${data.reservation_date} ${data.reservation_time} UTC`);
-  // today is set to the open time of the restaurant
-  // restaurant opens at 10am est time but needs to be converted to UTC time.
-  let today = new Date(`${formatDateNow()} 15:00:00 UTC`);
-  console.log("compare:", today, "with", date);
-  if (date >= today && data.reservation_time < "05:00:00") {
+  // the date variable holds the date from the client and converts the date to be,
+  // UTC that way it can be compaired. If this is not done we will be compairing a date,
+  // from EST time which is 5 hours behind UTC with UTC which is ahead.
+  let date = new Date(`${data.reservation_date} 00:00:00 UTC`);
+  // today is set to 00:00:00 or the start of that day to make it level with
+  // the date from the client. I was running into incossitent compairsons with,
+  // dates because the client was returning a EST timezone date while the server,
+  // is on UTC.
+  let today = new Date(`${formatDateNow()} 00:00:00 UTC`);
+  //we are assuming that the store closes at midnight. or 12am est
+  if (date >= today) {
     // date + 1 to allign date with western hemisphere date, if confused lookup getDay() returns wrong value
     if (date + 1 == 2) {
       next({
         status: 400,
         message: `We are not open on tuesdays!`,
       });
-    } else console.log("next");
+    } else next();
   } else {
     next({
       status: 400,
-      message: `We are not open at ${data.reservation_time}`,
+      message: `This is in the past!!! ${data.reservation_date}`,
     });
+  }
+}
+
+function hasValidTime(req, res, next) {
+  const { data = {} } = req.body;
+
+  const reservationTime = new Date(
+    `${data.reservation_date} ${data.reservation_time}`
+  )
+    .toJSON()
+    .slice(11, 19);
+  const todayTime = new Date().toJSON().slice(11, 19);
+  // the store opens at 10:30am but since we converted to UTC time
+  // the store opens at 3:30pm since UTC is 5 hours ahead of eastern timezone.
+
+  // the store closes at 10:30pm but since we converted to UTC time
+  // the store closes at 3:30am since UTC is 5 hours ahead of eastern timezone.
+
+  // CANNOT MAKE RESERVATIONS WITHIN 1 HOUR OF CLOSING!!!!
+
+  // 1530 10:30AM/3:30PM UTC OPEN
+  // 0230 9:30PM/2:30AM UTC RESERVATION CUTOFF
+  // 0330 10:30PM/3:30AM UTC CLOSE
+  // 0500 12:00AM/5:00AM UTC MIDNIGHT
+
+  console.log(reservationTime);
+  if (reservationTime < "15:30:00" && reservationTime > "05:00:00") {
+    next({
+      status: 400,
+      message: `We open at 10:30am!!!`,
+    });
+  } else if (reservationTime > "02:30:00" && reservationTime < "03:30:00") {
+    next({
+      status: 400,
+      message: `Sorry, we are not allowed to schedule a reservation within an hour before closing!`,
+    });
+  } else if (reservationTime > "03:30:00" && reservationTime <= "05:00:00") {
+    next({
+      status: 400,
+      message: `Sorry, but we are closed at that time!`,
+    });
+  } else if (reservationTime < todayTime) {
+    next({
+      status: 400,
+      message: `Sorry, that time is no longer available!`,
+    });
+  } else {
+    next();
   }
 }
 
@@ -104,6 +156,7 @@ module.exports = {
     hasOnlyValidProperties,
     hasRequiredProperties,
     hasValidDate,
+    hasValidTime,
     asyncErrorBoundary(create),
   ],
   read: [asyncErrorBoundary(reservationExist), asyncErrorBoundary(read)],
