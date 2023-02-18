@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { listReservations, getAllReservationDates } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import DisplayTableReservations from "../layout/displayTableRes";
 
 /**
  * Defines the dashboard page.
@@ -57,6 +58,12 @@ function Dashboard({ date }) {
             <p>Date: {reservation.reservation_date}</p>
             <p>Time: {reservation.reservation_time}</p>
             <p>People: {reservation.people}</p>
+            <Link
+              to={`/reservations/${reservation.reservation_id}/seat`}
+              className="btn btn-primary"
+            >
+              Seat
+            </Link>
           </div>
         </div>
       );
@@ -113,6 +120,7 @@ function Dashboard({ date }) {
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={occupiedDatesError} />
       {list}
+      <DisplayTableReservations />
     </main>
   );
 }

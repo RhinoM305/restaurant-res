@@ -8,6 +8,7 @@ const cors = require("cors");
 const errorHandler = require("./errors/errorHandler");
 const notFound = require("./errors/notFound");
 const reservationsRouter = require("./reservations/reservations.router");
+const tableRouter = require("./reservations/table_reservations/table.router");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/reservations", reservationsRouter);
 app.use("/dashboard", reservationsRouter);
+app.use("/tables", tableRouter);
 
 app.use(notFound);
 app.use(errorHandler);

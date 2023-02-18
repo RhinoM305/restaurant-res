@@ -3,7 +3,7 @@ const knex = require("../db/connection");
 
 const tableName = "reservations";
 
-function read(date) {
+function readByDate(date) {
   return knex("reservations as r")
     .where({ "r.reservation_date": date })
     .select("r.*");
@@ -23,8 +23,13 @@ function list() {
     .distinct();
 }
 
+function read(reservation_id) {
+  return knex("reservations").where({ reservation_id }).select("*").first();
+}
+
 module.exports = {
-  read,
+  readByDate,
   create,
   list,
+  read,
 };

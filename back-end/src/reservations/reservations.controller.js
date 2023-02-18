@@ -48,7 +48,7 @@ async function reservationExist(req, res, next) {
     date = formatDateNow();
   }
 
-  const reservations = await service.read(date);
+  const reservations = await service.readByDate(date);
   if (reservations[0]) {
     res.locals.reservations = reservations;
     next();
@@ -110,7 +110,6 @@ function hasValidTime(req, res, next) {
   // 0330 10:30PM/3:30AM UTC CLOSE
   // 0500 12:00AM/5:00AM UTC MIDNIGHT
 
-  console.log(reservationTime);
   if (reservationTime < "15:30:00" && reservationTime > "05:00:00") {
     next({
       status: 400,
@@ -141,7 +140,7 @@ async function create(req, res) {
   res.status(201).json({ newCreation });
 }
 
-async function read(req, res) {
+async function readByDate(req, res) {
   res.json({
     data: res.locals.reservations,
   });
@@ -159,5 +158,8 @@ module.exports = {
     hasValidTime,
     asyncErrorBoundary(create),
   ],
-  read: [asyncErrorBoundary(reservationExist), asyncErrorBoundary(read)],
+  readByDate: [
+    asyncErrorBoundary(reservationExist),
+    asyncErrorBoundary(readByDate),
+  ],
 };
