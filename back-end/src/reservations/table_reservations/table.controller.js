@@ -21,6 +21,11 @@ async function tableExists(req, res, next) {
 
 async function tableHasEnoughSeats(req, res, next) {
   const { reservation_id } = req.body.data;
+
+  if (reservation_id == null) {
+    return next();
+  }
+
   const { people } = await reservationService.read(reservation_id);
 
   if (res.locals.table.capacity < people) {
@@ -33,10 +38,21 @@ async function tableHasEnoughSeats(req, res, next) {
 }
 
 async function tableIsAvailable(req, res, next) {
+  const { reservation_id } = req.body.data;
   if (res.locals.table.reservation_id) {
     next({
       status: 400,
       message: `Table is occupied!`,
+    });
+  }
+  next();
+}
+
+function isTableNull(req, res, next) {
+  if (res.locals.table.reservation_id === null) {
+    next({
+      status: 400,
+      message: `Table is already empty!`,
     });
   }
   next();
@@ -60,6 +76,13 @@ async function update(req, res) {
   res.json({ data });
 }
 
+async function destroy(req, res) {
+  const { table_id } = req.params;
+  const updatedTable = { ...res.locals.table, reservation_id: null };
+  await service.destroy(updatedTable);
+  res.sendStatus(204);
+}
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
   update: [
@@ -69,4 +92,5 @@ module.exports = {
     asyncErrorBoundary(update),
   ],
   read: [tableExists, read],
+  delete: [tableExists, isTableNull, asyncErrorBoundary(destroy)],
 };

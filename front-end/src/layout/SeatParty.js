@@ -3,6 +3,7 @@ import { getAllTableReservations } from "../utils/api";
 import { useParams, useHistory } from "react-router-dom";
 import { assignReservationToTable } from "../utils/api";
 import ErrorAlert from "./ErrorAlert";
+import findTableID from "./findTableID";
 
 function SeatParty() {
   const [option, setOption] = useState("");
@@ -38,22 +39,16 @@ function SeatParty() {
   }
 
   function submitHandler(event) {
-    console.log("ran");
     event.preventDefault();
     const abortController = new AbortController();
     assignReservationToTable(
       { data: { reservation_id: Number(reservation_id) } },
-      findTableID(option),
+      findTableID(option, tables),
       abortController.signal
     )
       .then((value) => history.push(`/dashboard`))
       .catch(setError);
     return () => abortController.abort();
-  }
-
-  function findTableID(table_name) {
-    const foundTable = tables.find((table) => table.table_name === table_name);
-    return foundTable.table_id;
   }
 
   return (

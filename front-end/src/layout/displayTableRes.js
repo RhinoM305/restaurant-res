@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getAllTableReservations } from "../utils/api";
+import { getAllTableReservations, deleteTableReservation } from "../utils/api";
+import findTableID from "./findTableID";
 // import ErrorAlert from "../layour/ErrorAlert";
 
 function DisplayTableReservations() {
   const [tables, setTables] = useState();
   const [error, setError] = useState();
+
   useEffect(loadTableReservations, []);
 
   function loadTableReservations() {
@@ -14,6 +16,22 @@ function DisplayTableReservations() {
       .then(setTables)
       .catch(setError);
     return () => abortController.abort();
+  }
+
+  function handleTableFinish(event) {
+    const tableID = event.target.value;
+
+    const abortController = new AbortController();
+
+    if (window.confirm("Are you sure?") == true) {
+      deleteTableReservation(tableID, abortController.signal)
+        .then(loadTableReservations)
+        .catch(setError);
+
+      return () => abortController.abort();
+    } else {
+      return;
+    }
   }
 
   const list = () => {
@@ -27,6 +45,16 @@ function DisplayTableReservations() {
               <p data-table-id-status={table.table_id}>
                 Availability: {table.reservation_id ? "occupied" : "unoccupied"}
               </p>
+              {table.reservation_id && (
+                <button
+                  className="btn btn-danger"
+                  onClick={handleTableFinish}
+                  value={table.table_id}
+                  data-table-id-finish={table.table_id}
+                >
+                  Finish
+                </button>
+              )}
             </div>
           </div>
         );
