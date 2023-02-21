@@ -47,6 +47,9 @@ function Dashboard({ date }) {
 
   if (reservations[0]) {
     list = reservations.map((reservation) => {
+      if (reservation.status === "finished") {
+        return;
+      }
       return (
         <div className="card">
           <div className="card-body">
@@ -58,12 +61,15 @@ function Dashboard({ date }) {
             <p>Date: {reservation.reservation_date}</p>
             <p>Time: {reservation.reservation_time}</p>
             <p>People: {reservation.people}</p>
-            <Link
-              to={`/reservations/${reservation.reservation_id}/seat`}
-              className="btn btn-primary"
-            >
-              Seat
-            </Link>
+            <p>Status: {reservation.status}</p>
+            {reservation.status === "booked" && (
+              <Link
+                to={`/reservations/${reservation.reservation_id}/seat`}
+                className="btn btn-primary"
+              >
+                Seat
+              </Link>
+            )}
           </div>
         </div>
       );
@@ -120,7 +126,7 @@ function Dashboard({ date }) {
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={occupiedDatesError} />
       {list}
-      <DisplayTableReservations />
+      <DisplayTableReservations refreshDashboard={loadDashboard} />
     </main>
   );
 }

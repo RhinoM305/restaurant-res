@@ -42,7 +42,11 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
-async function reservationExist(req, res, next) {
+async function reservationsExistUsingDate(req, res, next) {
+  // this method of pulling reservation uses the data rather than ID to fetch the reservations,
+  // the reason behind that is because I used the data in params to filter out the reservations,
+  // for the specifc date, this method of validation will also be diffrent because it will pull multiple reservations,
+  // rather than just one reservation like the other simlair middleware function.
   let date = req.query.date;
   if (!date) {
     date = formatDateNow();
@@ -135,6 +139,21 @@ function hasValidTime(req, res, next) {
   }
 }
 
+async function reservationExistsUsingReservationID(req, res, next) {
+  const { reservationID } = req.params;
+
+  const reservation = await service.read(reservationID);
+
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  return next({
+    status: 404,
+    message: "Reservation not found",
+  });
+}
+
 async function create(req, res) {
   const newCreation = await service.create(req.body.data);
   res.status(201).json({ newCreation });
@@ -149,6 +168,27 @@ async function readByDate(req, res) {
 async function list(req, res) {
   res.json({ data: await service.list() });
 }
+
+async function read(req, res) {
+  const { reservationID } = req.params;
+
+  res.json({ data: await service.read(reservationID) });
+}
+
+async function update(req, res) {
+  const { reservationID } = req.params;
+  console.log(req.body.data);
+  const updatedReservation = {
+    ...req.body.data,
+    reservation_id: res.locals.reservation.reservation_id,
+  };
+
+  await service.update(updatedReservation);
+
+  const data = await service.read(reservationID);
+
+  res.json({ data });
+}
 module.exports = {
   list: [asyncErrorBoundary(list)],
   create: [
@@ -159,7 +199,9 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   readByDate: [
-    asyncErrorBoundary(reservationExist),
+    asyncErrorBoundary(reservationsExistUsingDate),
     asyncErrorBoundary(readByDate),
   ],
+  update: [reservationExistsUsingReservationID, asyncErrorBoundary(update)],
+  read,
 };
