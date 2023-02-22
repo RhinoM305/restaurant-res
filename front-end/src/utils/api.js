@@ -118,3 +118,8 @@ export async function updateReservation(data, reservationID, signal) {
   };
   return await fetchJson(url, options, {});
 }
+
+export async function searchReservationsWithPhone(number, signal) {
+  const url = new URL(`${API_BASE_URL}/reservations?mobile_phone=${number}`);
+  return await fetchJson(url, { headers, signal }, []);
+}

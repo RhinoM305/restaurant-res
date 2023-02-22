@@ -42,25 +42,41 @@ function hasOnlyValidProperties(req, res, next) {
   next();
 }
 
-async function reservationsExistUsingDate(req, res, next) {
+async function reservationsExistUsingDateOrPhone(req, res, next) {
   // this method of pulling reservation uses the data rather than ID to fetch the reservations,
   // the reason behind that is because I used the data in params to filter out the reservations,
   // for the specifc date, this method of validation will also be diffrent because it will pull multiple reservations,
   // rather than just one reservation like the other simlair middleware function.
-  let date = req.query.date;
-  if (!date) {
-    date = formatDateNow();
-  }
+  let { mobile_phone, date } = req.query;
 
-  const reservations = await service.readByDate(date);
-  if (reservations[0]) {
-    res.locals.reservations = reservations;
-    next();
+  let reservations = null;
+
+  if (mobile_phone) {
+    reservations = await service.readByPhone(mobile_phone);
+    if (reservations[0]) {
+      res.locals.reservations = reservations;
+      next();
+    } else {
+      next({
+        status: 404,
+        message: "No reservations found for given phone number.",
+      });
+    }
   } else {
-    next({
-      status: 404,
-      message: "No reservations found for given date.",
-    });
+    if (!date) {
+      date = formatDateNow();
+    }
+
+    reservations = await service.readByDate(date);
+    if (reservations[0]) {
+      res.locals.reservations = reservations;
+      next();
+    } else {
+      next({
+        status: 404,
+        message: "No reservations found for given date.",
+      });
+    }
   }
 }
 
@@ -78,7 +94,8 @@ function hasValidDate(req, res, next) {
   //we are assuming that the store closes at midnight. or 12am est
   if (date >= today) {
     // date + 1 to allign date with western hemisphere date, if confused lookup getDay() returns wrong value
-    if (date + 1 == 2) {
+
+    if (date.getDay() + 1 == 2) {
       next({
         status: 400,
         message: `We are not open on tuesdays!`,
@@ -159,7 +176,7 @@ async function create(req, res) {
   res.status(201).json({ newCreation });
 }
 
-async function readByDate(req, res) {
+async function readByDateOrPhone(req, res) {
   res.json({
     data: res.locals.reservations,
   });
@@ -177,7 +194,6 @@ async function read(req, res) {
 
 async function update(req, res) {
   const { reservationID } = req.params;
-  console.log(req.body.data);
   const updatedReservation = {
     ...req.body.data,
     reservation_id: res.locals.reservation.reservation_id,
@@ -199,8 +215,8 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   readByDate: [
-    asyncErrorBoundary(reservationsExistUsingDate),
-    asyncErrorBoundary(readByDate),
+    asyncErrorBoundary(reservationsExistUsingDateOrPhone),
+    asyncErrorBoundary(readByDateOrPhone),
   ],
   update: [reservationExistsUsingReservationID, asyncErrorBoundary(update)],
   read,

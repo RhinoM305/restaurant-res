@@ -78,8 +78,9 @@ function NewReservation() {
             className="form-control"
             id="reservationMobileNumberInput"
             placeholder="phone number"
-            maxLength="10"
+            maxLength="12"
             required
+            value={reservationForm.mobile_number}
             onChange={(update) => {
               const formattedPhoneNumber = formatPhoneNumber(
                 update.target.value

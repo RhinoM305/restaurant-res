@@ -9,6 +9,12 @@ function readByDate(date) {
     .select("r.*");
 }
 
+function readByPhone(mobile_number) {
+  return knex("reservations")
+    .where("mobile_number", "like", `${mobile_number}%`)
+    .select("*");
+}
+
 function create(reservation) {
   return knex("reservations")
     .insert(reservation)
@@ -35,6 +41,7 @@ function update(updatedReservation) {
 
 module.exports = {
   readByDate,
+  readByPhone,
   create,
   list,
   read,

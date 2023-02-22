@@ -3,6 +3,7 @@ import { listReservations, getAllReservationDates } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useHistory, Link } from "react-router-dom";
 import DisplayTableReservations from "../layout/displayTableRes";
+import ListReservations from "../layout/ListReservations";
 
 /**
  * Defines the dashboard page.
@@ -19,7 +20,6 @@ function Dashboard({ date }) {
   const history = useHistory();
 
   let indexOfCurrentDate = 0;
-  let list = null;
 
   useEffect(loadDashboard, [date]);
   useEffect(getOccupiedDates, [date]);
@@ -45,36 +45,6 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-  if (reservations[0]) {
-    list = reservations.map((reservation) => {
-      if (reservation.status === "finished") {
-        return;
-      }
-      return (
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">
-              Reservation: {reservation.first_name}
-            </h5>
-            <p>Last Name: {reservation.last_name}</p>
-            <p>Mobile Number: {reservation.mobile_number}</p>
-            <p>Date: {reservation.reservation_date}</p>
-            <p>Time: {reservation.reservation_time}</p>
-            <p>People: {reservation.people}</p>
-            <p>Status: {reservation.status}</p>
-            {reservation.status === "booked" && (
-              <Link
-                to={`/reservations/${reservation.reservation_id}/seat`}
-                className="btn btn-primary"
-              >
-                Seat
-              </Link>
-            )}
-          </div>
-        </div>
-      );
-    });
-  }
   if (occupiedDates[0]) {
     indexOfCurrentDate = occupiedDates.indexOf(date);
   }
@@ -125,7 +95,7 @@ function Dashboard({ date }) {
       </div>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={occupiedDatesError} />
-      {list}
+      {reservations[0] && <ListReservations data={reservations} />}
       <DisplayTableReservations refreshDashboard={loadDashboard} />
     </main>
   );
