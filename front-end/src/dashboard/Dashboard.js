@@ -16,13 +16,14 @@ function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [occupiedDates, setOccupiedDates] = useState([]);
   const [occupiedDatesError, setOccupiedDatesError] = useState(null);
+  const [error, setError] = useState("");
 
   const history = useHistory();
 
   let indexOfCurrentDate = 0;
 
   useEffect(loadDashboard, [date]);
-  useEffect(getOccupiedDates, [date]);
+  useEffect(getOccupiedDates, []);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -95,7 +96,14 @@ function Dashboard({ date }) {
       </div>
       <ErrorAlert error={reservationsError} />
       <ErrorAlert error={occupiedDatesError} />
-      {reservations[0] && <ListReservations data={reservations} />}
+      <ErrorAlert error={error} />
+      {reservations[0] && (
+        <ListReservations
+          data={reservations}
+          load={loadDashboard}
+          setError={setError}
+        />
+      )}
       <DisplayTableReservations refreshDashboard={loadDashboard} />
     </main>
   );

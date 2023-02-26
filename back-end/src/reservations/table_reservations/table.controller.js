@@ -2,6 +2,8 @@ const service = require("./table.service");
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const reservationService = require("../reservations.service");
 
+const knex = require("../../db/connection");
+
 async function list(req, res) {
   res.json({ data: await service.list() });
 }
@@ -62,18 +64,24 @@ function read(req, res) {
   res.json({ data: res.locals.table });
 }
 
-async function update(req, res) {
-  const { table_id } = req.params;
+async function update(req, res, next) {
   const updatedTable = {
-    ...req.body.data,
-    table_id: res.locals.table.table_id,
+    ...res.locals.table,
+    reservation_id: req.body.data.reservation_id,
   };
 
-  await service.update(updatedTable);
+  res.locals.updatedTable = updatedTable;
+  // Im leaving this update function here for possible implementation
+  // of update tables isolated from reservation. AKA table edit feature or
+  // something similair.
+  next();
+}
 
-  const data = await service.read(table_id);
-
-  res.json({ data });
+async function updateReservationStatus(req, res, next) {
+  const { reservation_id, status } = req.body.data;
+  const reservation = await reservationService.read(reservation_id);
+  res.locals.reservation = { ...reservation, status: status };
+  next();
 }
 
 async function destroy(req, res) {
@@ -83,13 +91,44 @@ async function destroy(req, res) {
   res.sendStatus(204);
 }
 
+async function transaction(req, res, next) {
+  console.log(res.locals.updatedTable);
+  knex.transaction((trx) => {
+    service
+      .update(res.locals.updatedTable)
+      .transacting(trx)
+      .then(() =>
+        reservationService.update(res.locals.reservation).transacting(trx)
+      )
+      .then(() => {
+        trx.commit();
+        res.send({ data: "Update Success!!!" });
+      })
+      .catch((err) => {
+        trx.rollback();
+        next({
+          status: 500,
+          message: err.message,
+        });
+      });
+  });
+}
+//Note to self:
+//you might be confused later on as to why I didnt need to call
+//the update method from the controller to validate the reservation
+//data. Since we are grabbing straight from the database and NOT,
+//from the client NO validation is necessary as the database can be
+//trusted.
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
   update: [
     tableExists,
     tableHasEnoughSeats,
     tableIsAvailable,
-    asyncErrorBoundary(update),
+    updateReservationStatus,
+    update,
+    transaction,
   ],
   read: [tableExists, read],
   delete: [tableExists, isTableNull, asyncErrorBoundary(destroy)],

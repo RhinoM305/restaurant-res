@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createReservation } from "../utils/api";
 import { useHistory } from "react-router-dom";
 import { today } from "../utils/date-time";
+import formatPhoneNumber from "./formatPhoneNumber";
 import ErrorAlert from "../layout/ErrorAlert";
 
 function NewReservation() {
@@ -25,20 +26,6 @@ function NewReservation() {
       )
       .catch(setError);
   };
-
-  function formatPhoneNumber(value) {
-    if (!value) return value;
-    const phoneNumber = value.replace(/[^\d]/g, "");
-    const phoneNumberLength = phoneNumber.length;
-    if (phoneNumberLength < 4) return phoneNumber;
-    if (phoneNumberLength < 7) {
-      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
-    }
-    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(
-      3,
-      6
-    )}-${phoneNumber.slice(6, 10)}`;
-  }
 
   if (error) console.log(error);
 

@@ -4,9 +4,10 @@ const knex = require("../db/connection");
 const tableName = "reservations";
 
 function readByDate(date) {
-  return knex("reservations as r")
-    .where({ "r.reservation_date": date })
-    .select("r.*");
+  return knex("reservations")
+    .select("*")
+    .whereNotIn("status", ["cancelled", "finished"])
+    .andWhere("reservation_date", "=", date);
 }
 
 function readByPhone(mobile_number) {
@@ -26,6 +27,7 @@ function list() {
   return knex("reservations")
     .select("reservation_date")
     .orderBy("reservation_date")
+    .whereNotIn("status", ["cancelled", "finished"])
     .distinct();
 }
 

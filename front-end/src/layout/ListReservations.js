@@ -1,12 +1,32 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { updateReservation } from "../utils/api";
 
-function ListReservations({ data, show = false }) {
+function ListReservations({ data, show = false, load, setError }) {
   // show is set to default value which is used to hyde the reservations
   // with a status of "finished", primarily used for the dashboard list.
   //
+
+  //load is whatever state the needs to be refreshed when cancle is submitted.
+  function cancelReservation(reservationID) {
+    const abortController = new AbortController();
+
+    if (window.confirm("Do you want to cancel this reservation?")) {
+      updateReservation(
+        { data: { status: "cancelled" } },
+        reservationID,
+        abortController.signal
+      )
+        .then(() => load())
+        .catch(setError);
+    }
+  }
+
   return data.map((reservation) => {
-    if (reservation.status === "finished" && !show) {
+    if (
+      (reservation.status === "finished" && !show) ||
+      reservation.status === "cancelled"
+    ) {
       return;
     }
 
@@ -21,13 +41,29 @@ function ListReservations({ data, show = false }) {
           <p>People: {reservation.people}</p>
           <p>Status: {reservation.status}</p>
           {reservation.status === "booked" && (
-            <Link
-              to={`/reservations/${reservation.reservation_id}/seat`}
-              className="btn btn-primary"
-            >
-              Seat
-            </Link>
+            <div>
+              <Link
+                to={`/reservations/${reservation.reservation_id}/seat`}
+                className="btn btn-primary"
+              >
+                Seat
+              </Link>
+              <Link
+                to={`/reservations/${reservation.reservation_id}/edit`}
+                className="btn btn-warning"
+              >
+                Edit
+              </Link>
+            </div>
           )}
+
+          <button
+            className="btn btn-danger"
+            data-reservation-id-cancel={reservation.reservation_id}
+            onClick={() => cancelReservation(reservation.reservation_id)}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     );

@@ -123,3 +123,8 @@ export async function searchReservationsWithPhone(number, signal) {
   const url = new URL(`${API_BASE_URL}/reservations?mobile_phone=${number}`);
   return await fetchJson(url, { headers, signal }, []);
 }
+
+export async function getSpecificReservation(reservationID, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservationID}`;
+  return await fetchJson(url, { headers, signal }, []);
+}

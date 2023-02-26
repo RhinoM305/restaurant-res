@@ -17,7 +17,7 @@ function SeatParty() {
 
   function loadTableReservations() {
     const abortController = new AbortController();
-    setError(null);
+    setError("");
     getAllTableReservations(abortController.signal)
       .then(setTables)
       .catch(setError);
@@ -43,24 +43,12 @@ function SeatParty() {
     const abortController = new AbortController();
 
     assignReservationToTable(
-      { data: { reservation_id: Number(reservation_id) } },
+      { data: { reservation_id: Number(reservation_id), status: "seated" } },
       findTableID(option, tables),
       abortController.signal
     )
-      .then(changeStatus("seated"))
       .then(() => history.goBack())
       .catch(setError);
-    return () => abortController.abort();
-  }
-
-  function changeStatus(status) {
-    const abortController = new AbortController();
-
-    updateReservation(
-      { data: { status: status } },
-      Number(reservation_id),
-      abortController.signal
-    ).catch(setError);
     return () => abortController.abort();
   }
 
