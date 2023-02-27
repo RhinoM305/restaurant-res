@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { listReservations, getAllReservationDates } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
-import { useHistory, Link } from "react-router-dom";
-import DisplayTableReservations from "../layout/displayTableRes";
-import ListReservations from "../layout/ListReservations";
+import ErrorAlert from "./ErrorAlert";
+import { useHistory } from "react-router-dom";
+import DisplayTableReservations from "./reservationTables/displayTableRes";
+import ListReservations from "./reservations/ListReservations";
+
+import "./Layout.css";
 
 /**
  * Defines the dashboard page.
@@ -13,9 +15,9 @@ import ListReservations from "../layout/ListReservations";
  */
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+
   const [occupiedDates, setOccupiedDates] = useState([]);
-  const [occupiedDatesError, setOccupiedDatesError] = useState(null);
+
   const [error, setError] = useState("");
 
   const history = useHistory();
@@ -27,22 +29,22 @@ function Dashboard({ date }) {
 
   function loadDashboard() {
     const abortController = new AbortController();
-    setReservationsError(null);
+    setError(null);
     listReservations({ date }, abortController.signal)
       .then(setReservations)
-      .catch(setReservationsError);
+      .catch(setError);
     return () => abortController.abort();
   }
 
   function getOccupiedDates() {
     const abortController = new AbortController();
-    setOccupiedDatesError(null);
+    setError(null);
     getAllReservationDates(abortController.signal)
       .then((data) => {
         return data.map((date) => date.reservation_date.substring(0, 10));
       })
       .then(setOccupiedDates)
-      .catch(setOccupiedDatesError);
+      .catch(setError);
     return () => abortController.abort();
   }
 
@@ -60,20 +62,41 @@ function Dashboard({ date }) {
 
     return (
       <React.Fragment>
-        {prev && (
-          <button onClick={() => clickHandler("prev", prev)}>{prev}</button>
-        )}
-        {next && (
-          <button onClick={() => clickHandler("next", next)}>{next}</button>
-        )}
-        <button
-          onClick={() => {
-            setReservations([]);
-            history.push(`/dashboard`);
-          }}
-        >
-          Home
-        </button>
+        <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+            }}
+          >
+            {prev && (
+              <button
+                onClick={() => clickHandler("prev", prev)}
+                className="col btn dashboard-date-btn"
+              >
+                {prev}
+              </button>
+            )}
+            {next && (
+              <button
+                onClick={() => clickHandler("next", next)}
+                className="col btn dashboard-date-btn"
+              >
+                {next}
+              </button>
+            )}
+          </div>
+          <button
+            className="col btn btn-dark"
+            style={{ backgroundColor: "black" }}
+            onClick={() => {
+              setReservations([]);
+              history.push(`/dashboard`);
+            }}
+          >
+            Today's Reservations
+          </button>
+        </div>
       </React.Fragment>
     );
   }
@@ -92,10 +115,8 @@ function Dashboard({ date }) {
       <h1>Dashboard</h1>
       {dateDisplay()}
       <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
+        <h4 className="mb-0">Reservations for today</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
-      <ErrorAlert error={occupiedDatesError} />
       <ErrorAlert error={error} />
       {reservations[0] && (
         <ListReservations

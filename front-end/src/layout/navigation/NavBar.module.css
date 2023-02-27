@@ -1,0 +1,45 @@
+.NavBar .MobileNavigation {
+  display:none;
+}
+
+
+@media (max-width: 768px) {
+  .NavBar .Navigation {
+    display:none;
+  }
+
+  .NavBar .MobileNavigation {
+    display: flex;
+  }
+
+
+
+  .NavBar .MobileNavigation ul li {
+    flex-grow: 4;
+    
+  }
+
+
+  .NavBar .MobileNavigation ul {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-grow: 1;
+  }
+
+  .NavBar .MobileNavigation ul li span {
+    /* border:2px solid green; */
+    
+  }
+
+  .menu_text {
+    display:none;
+  }
+  
+  .menu_icons {
+    width: 32px;
+    height: 32px;
+    color: white;
+  }
+  
+ }

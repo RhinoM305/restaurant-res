@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { searchReservationsWithPhone } from "../utils/api";
-import ListReservations from "./ListReservations";
+import ListReservations from "./reservations/ListReservations";
 import ErrorAlert from "./ErrorAlert";
-import formatPhoneNumber from "./formatPhoneNumber";
+import formatPhoneNumber from "../utils/formatPhoneNumber";
+
+import "./Layout.css";
 
 function Search() {
   const [number, setNumber] = useState("");
@@ -22,10 +24,11 @@ function Search() {
   }
 
   return (
-    <div>
-      <h2>Search for reservation by number:</h2>
+    <div className="search-form">
+      <h4 style={{ whiteSpace: "nowrap" }}>
+        Search for reservation by number:
+      </h4>
       <form onSubmit={submitHandler}>
-        <label>Number:</label>
         <input
           placeHolder="Enter a customer's phone number"
           className="form-control"
@@ -36,7 +39,7 @@ function Search() {
             setNumber(formattedPhoneNumber);
           }}
         />
-        <button className="btn btn-primary">Find</button>
+        <button className="btn bottom-button">Find</button>
       </form>
       <ErrorAlert error={error} />
       {reservations && <ListReservations data={reservations} show={true} />}

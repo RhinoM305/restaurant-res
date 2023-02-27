@@ -17,6 +17,12 @@ module.exports = {
   test: {
     client: "postgresql",
     connection: DATABASE_URL_TEST,
+    migrations: {
+      directory: path.join(__dirname, "src", "db", "migrations"),
+    },
+    seeds: {
+      directory: "./src/db/seeds",
+    },
   },
   production: {
     client: "postgresql",

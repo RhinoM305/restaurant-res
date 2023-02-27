@@ -3,9 +3,11 @@ import {
   getAllTableReservations,
   deleteTableReservation,
   updateReservation,
-} from "../utils/api";
+} from "../../utils/api";
 import findTableID from "./findTableID";
 // import ErrorAlert from "../layour/ErrorAlert";
+
+import "./tables.css";
 
 function DisplayTableReservations({ refreshDashboard }) {
   const [tables, setTables] = useState();
@@ -54,16 +56,20 @@ function DisplayTableReservations({ refreshDashboard }) {
     if (tables) {
       return tables.map((table) => {
         return (
-          <div className="card">
+          <div className="card tables-cards">
+            <div className="card-header" style={{ backgroundColor: "black" }}>
+              <h5 className="card-title" style={{ color: "white" }}>
+                {table.table_name}
+              </h5>
+            </div>
             <div className="card-body">
-              <h5 className="card-title">{table.table_name}</h5>
               <p>Capacity: {table.capacity}</p>
               <p data-table-id-status={table.table_id}>
                 Availability: {table.reservation_id ? "occupied" : "unoccupied"}
               </p>
               {table.reservation_id && (
                 <button
-                  className="btn btn-danger"
+                  className="btn bottom-button-cancel"
                   onClick={(event) =>
                     handleTableFinish(event, table.reservation_id)
                   }
@@ -82,7 +88,7 @@ function DisplayTableReservations({ refreshDashboard }) {
   return (
     <div>
       <h2>Table Reservations</h2>
-      {list()}
+      <div className="bottom-tables">{list()}</div>
     </div>
   );
 }

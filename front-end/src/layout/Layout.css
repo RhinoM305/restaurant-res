@@ -1,4 +1,35 @@
 .side-bar {
-  background-color: #393a44;
+  background-color: black;
   min-width: 200px;
 }
+
+.background {
+}
+
+.dashboard-date-btn {
+  background-color: #ffe5b4;
+}
+
+.bottom-button {
+  margin-bottom: 10px;
+  background-color:#ffe5b4;
+  width:100%;
+}
+
+.search-form {
+  margin-top:20px
+}
+
+
+
+
+
+
+@media (min-width: 768px) {
+
+
+  /* .layout-conta */
+}
+
+
+

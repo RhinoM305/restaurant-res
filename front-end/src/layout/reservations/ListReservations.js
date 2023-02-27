@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { updateReservation } from "../utils/api";
+import { updateReservation } from "../../utils/api";
 
 function ListReservations({ data, show = false, load, setError }) {
   // show is set to default value which is used to hyde the reservations
@@ -40,30 +40,31 @@ function ListReservations({ data, show = false, load, setError }) {
           <p>Time: {reservation.reservation_time}</p>
           <p>People: {reservation.people}</p>
           <p>Status: {reservation.status}</p>
-          {reservation.status === "booked" && (
-            <div>
+          <div>
+            {reservation.status === "booked" && (
               <Link
                 to={`/reservations/${reservation.reservation_id}/seat`}
-                className="btn btn-primary"
+                className="btn bottom-button"
               >
                 Seat
               </Link>
+            )}
+            {reservation.status === "booked" && (
               <Link
                 to={`/reservations/${reservation.reservation_id}/edit`}
-                className="btn btn-warning"
+                className="btn bottom-button"
               >
                 Edit
               </Link>
-            </div>
-          )}
-
-          <button
-            className="btn btn-danger"
-            data-reservation-id-cancel={reservation.reservation_id}
-            onClick={() => cancelReservation(reservation.reservation_id)}
-          >
-            Cancel
-          </button>
+            )}
+            <button
+              className="btn btn-danger bottom-button-cancel"
+              data-reservation-id-cancel={reservation.reservation_id}
+              onClick={() => cancelReservation(reservation.reservation_id)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
     );

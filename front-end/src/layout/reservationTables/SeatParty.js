@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getAllTableReservations } from "../utils/api";
+import { getAllTableReservations } from "../../utils/api";
 import { useParams, useHistory } from "react-router-dom";
-import { assignReservationToTable, updateReservation } from "../utils/api";
-import ErrorAlert from "./ErrorAlert";
+import { assignReservationToTable, updateReservation } from "../../utils/api";
+import ErrorAlert from "../ErrorAlert";
 import findTableID from "./findTableID";
+
+import "./tables.css";
 
 function SeatParty() {
   const [option, setOption] = useState("");
@@ -53,19 +55,24 @@ function SeatParty() {
   }
 
   return (
-    <div>
-      <h2>Please Seat Selected Party: </h2>
+    <div className="tables-reservation-form">
+      <h3>Please Seat Selected Party </h3>
       <ErrorAlert error={error} />
       <form onSubmit={submitHandler}>
-        <label>Available Tables:</label>
-        <select name="table_id" value={option} required onChange={handleChange}>
-          <option value="">--Please Pick A Table--</option>
+        <select
+          className="col-sm-2"
+          name="table_id"
+          value={option}
+          required
+          onChange={handleChange}
+        >
+          <option value="">--Please Select A Table--</option>
           {list()}
         </select>
-        <button className="btn btn-primary">Submit</button>
+        <button className="btn bottom-button mt-2">Submit</button>
         <button
           type="button"
-          className="btn btn-danger"
+          className="btn bottom-button-cancel"
           onClick={() => history.goBack()}
         >
           Cancel

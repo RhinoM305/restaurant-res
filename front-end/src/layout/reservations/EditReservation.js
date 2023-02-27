@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { getSpecificReservation, updateReservation } from "../utils/api";
-import { today } from "../utils/date-time";
-import formatPhoneNumber from "./formatPhoneNumber";
-import ErrorAlert from "./ErrorAlert";
+import { getSpecificReservation, updateReservation } from "../../utils/api";
+import { today } from "../../utils/date-time";
+import formatPhoneNumber from "../../utils/formatPhoneNumber";
+import ErrorAlert from "../ErrorAlert";
+
+import "./Reservations.css";
 
 function EditReservation() {
   const [reservation, setReservation] = useState({});
@@ -39,8 +41,9 @@ function EditReservation() {
 
   function editForm() {
     return (
-      <div>
+      <div className="reservation-form">
         <ErrorAlert error={error} />
+        <h4>Edit</h4>
         <form onSubmit={submitHandler}>
           <div className="form-group">
             <label htmlFor="reservationFirstNameInput">First Name</label>
@@ -138,7 +141,14 @@ function EditReservation() {
               }}
             />
           </div>
-          <button className="btn btn-secondary">Submit</button>
+          <button className="btn bottom-button">Submit</button>
+          <button
+            type="button"
+            className="btn bottom-button-cancel"
+            onClick={() => history.goBack()}
+          >
+            Cancel
+          </button>
         </form>
       </div>
     );

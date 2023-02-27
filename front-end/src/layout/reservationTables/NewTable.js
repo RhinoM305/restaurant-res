@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
+import ErrorAlert from "../ErrorAlert";
+
+import "./tables.css";
 
 function NewTable() {
   const history = useHistory();
@@ -13,6 +15,7 @@ function NewTable() {
   return (
     <div>
       {/* <ErrorAlert /> */}
+      <h4>New Table</h4>
       <form onSubmit={submitHandler}>
         <div className="form-group">
           <label>Table Name</label>
@@ -20,10 +23,15 @@ function NewTable() {
           <label>Capacity</label>
           <input className="form-control" type="number"></input>
         </div>
-        <button className="btn btn-primary">submit</button>
-        <button className="btn btn-danger" onClick={() => history.goBack()}>
-          cancel
-        </button>
+        <div className="tables-reservation-form">
+          <button className="col-sm-2 btn bottom-button">submit</button>
+          <button
+            className="col-sm-2 btn bottom-button-cancel"
+            onClick={() => history.goBack()}
+          >
+            cancel
+          </button>
+        </div>
       </form>
     </div>
   );

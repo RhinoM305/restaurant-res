@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { createReservation } from "../utils/api";
+import { createReservation } from "../../utils/api";
 import { useHistory } from "react-router-dom";
-import { today } from "../utils/date-time";
-import formatPhoneNumber from "./formatPhoneNumber";
-import ErrorAlert from "../layout/ErrorAlert";
+import { today } from "../../utils/date-time";
+import formatPhoneNumber from "../../utils/formatPhoneNumber";
+import ErrorAlert from "../ErrorAlert";
 
+import "./Reservations.css";
 function NewReservation() {
   const [reservationForm, setReservationForm] = useState({
     first_name: "",
@@ -32,7 +33,8 @@ function NewReservation() {
   return (
     <div>
       <ErrorAlert error={error} />
-      <form onSubmit={submitHandler}>
+      <h4>New Reservation</h4>
+      <form onSubmit={submitHandler} className="reservation-form">
         <div className="form-group">
           <label htmlFor="reservationFirstNameInput">First Name</label>
           <input
@@ -125,7 +127,7 @@ function NewReservation() {
             }}
           />
         </div>
-        <button className="btn btn-secondary">Submit</button>
+        <button className="btn bottom-button">Submit</button>
       </form>
     </div>
   );
