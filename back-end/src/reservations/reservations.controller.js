@@ -93,7 +93,6 @@ function hasValidDate(req, res, next) {
   let today = new Date(`${formatDateNow()} 00:00:00 UTC`);
   //we are assuming that the store closes at midnight. or 12am est
 
-  console.log(date);
   if (date >= today) {
     // date + 1 to allign date with western hemisphere date, if confused lookup getDay() returns wrong value
     if (date.getDay() + 1 == 2) {
@@ -241,5 +240,5 @@ module.exports = {
     asyncErrorBoundary(readByDateOrPhone),
   ],
   update: [reservationExistsUsingReservationID, asyncErrorBoundary(update)],
-  read,
+  read: [reservationExistsUsingReservationID, read],
 };
