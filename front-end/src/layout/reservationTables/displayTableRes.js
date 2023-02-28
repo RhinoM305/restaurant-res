@@ -56,7 +56,7 @@ function DisplayTableReservations({ refreshDashboard }) {
     if (tables) {
       return tables.map((table) => {
         return (
-          <div className="card tables-cards">
+          <div className="card tables-cards" key={table.table_id}>
             <div className="card-header" style={{ backgroundColor: "black" }}>
               <h5 className="card-title" style={{ color: "white" }}>
                 {table.table_name}

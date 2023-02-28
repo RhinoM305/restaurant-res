@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllTableReservations } from "../../utils/api";
 import { useParams, useHistory } from "react-router-dom";
-import { assignReservationToTable, updateReservation } from "../../utils/api";
+import { assignReservationToTable } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 import findTableID from "./findTableID";
 

@@ -7,20 +7,23 @@ import "./tables.css";
 
 function NewTable() {
   const [table, setTable] = useState({ table_name: "", capacity: 1 });
+  const [error, setError] = useState("");
   const history = useHistory();
 
   const submitHandler = (event) => {
     event.preventDefault();
 
     const abortController = new AbortController();
-    createTable({ data: table });
+    createTable({ data: table })
+      .then(() => history.push("/dashboard"))
+      .catch(setError);
 
-    history.push("/dashboard");
+    return () => abortController.Abort();
   };
 
   return (
     <div className="tables-form">
-      {/* <ErrorAlert /> */}
+      <ErrorAlert error={error} />
       <h4>New Table</h4>
       <form onSubmit={submitHandler}>
         <div className="form-group">

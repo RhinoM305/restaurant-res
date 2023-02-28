@@ -31,7 +31,7 @@ function ListReservations({ data, show = false, load, setError }) {
     }
 
     return (
-      <div className="card desk-card">
+      <div className="card desk-card" key={reservation.reservation_id}>
         <div className="card-body">
           <h5 className="card-title">Reservation: {reservation.first_name}</h5>
           <p>Last Name: {reservation.last_name}</p>
