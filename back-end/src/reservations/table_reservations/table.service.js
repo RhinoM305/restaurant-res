@@ -16,6 +16,13 @@ function update(updatedTable) {
     .update(updatedTable);
 }
 
+function create(table) {
+  return knex("tables")
+    .insert(table)
+    .returning("*")
+    .then((createdRecords) => createdRecords[0]);
+}
+
 function destroy(updatedTable) {
   return knex("tables")
     .where({ table_id: updatedTable.table_id })
@@ -26,5 +33,6 @@ module.exports = {
   list,
   read,
   update,
+  create,
   destroy,
 };

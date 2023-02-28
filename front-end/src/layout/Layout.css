@@ -1,13 +1,14 @@
-.side-bar {
+.bar {
   background-color: black;
-  min-width: 200px;
-}
-
-.background {
+  position:fixed;
+  z-index:999;
+  bottom:0;
+  width:100%;
 }
 
 .dashboard-date-btn {
   background-color: #ffe5b4;
+  flex-grow:4;
 }
 
 .bottom-button {
@@ -16,19 +17,59 @@
   width:100%;
 }
 
-.search-form {
-  margin-top:20px
+.dashboard-date-selct {
+  display:flex;
+  align-self:center;
 }
 
+.home-btn {
+  background:black;
+  color:white;
+  width:100%;
+  align-self:center;
+}
+.routes {
+  width:100%;
+}
 
-
-
+.search-div {
+  margin:20px;
+}
 
 
 @media (min-width: 768px) {
 
+  .dashboard-buttons {
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+  }
+  
 
-  /* .layout-conta */
+  .seat-form {
+    display:flex;
+    flex-direction:column;
+  }
+  
+  .seat-form > button {
+    width:95%;
+    align-self:center;
+  }
+
+  .bar{
+    position:relative;
+  }
+
+  .dashboard-date-btn {
+    background-color: #ffe5b4;
+    flex-grow:0;
+    margin-right:10px;
+    margin-bottom:10px;
+  }
+
+  .home-btn {
+    width:auto;
+  }
 }
 
 

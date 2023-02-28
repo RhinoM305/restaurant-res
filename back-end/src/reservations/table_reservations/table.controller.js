@@ -1,8 +1,35 @@
 const service = require("./table.service");
 const asyncErrorBoundary = require("../../errors/asyncErrorBoundary");
 const reservationService = require("../reservations.service");
+const hasProperties = require("../../errors/hasProperties");
 
 const knex = require("../../db/connection");
+
+const hasRequiredProperties = hasProperties("table_name", "capacity");
+
+const VALID_PROPERTIES = [
+  "table_name",
+  "capacity",
+  "reservation_id",
+  "table_id",
+];
+
+function hasOnlyValidProperties(req, res, next) {
+  const { data = {} } = req.body;
+  console.log(data);
+  const invalidFields = Object.keys(data).filter(
+    (field) => !VALID_PROPERTIES.includes(field)
+  );
+
+  if (invalidFields.length) {
+    return next({
+      status: 400,
+      message: `Invalid field(s): ${invalidFields.join(", ")}`,
+    });
+  }
+
+  next();
+}
 
 async function list(req, res) {
   res.json({ data: await service.list() });
@@ -91,6 +118,11 @@ async function destroy(req, res) {
   res.sendStatus(204);
 }
 
+async function create(req, res) {
+  const newCreation = await service.create(req.body.data);
+  console.log(newCreation);
+  res.status(201).json({ newCreation });
+}
 async function transaction(req, res, next) {
   console.log(res.locals.updatedTable);
   knex.transaction((trx) => {
@@ -131,5 +163,10 @@ module.exports = {
     transaction,
   ],
   read: [tableExists, read],
+  create: [
+    hasOnlyValidProperties,
+    hasRequiredProperties,
+    asyncErrorBoundary(create),
+  ],
   delete: [tableExists, isTableNull, asyncErrorBoundary(destroy)],
 };

@@ -24,11 +24,11 @@ function Search() {
   }
 
   return (
-    <div className="search-form">
+    <div className="search-div">
       <h4 style={{ whiteSpace: "nowrap" }}>
         Search for reservation by number:
       </h4>
-      <form onSubmit={submitHandler}>
+      <form onSubmit={submitHandler} className="seat-form">
         <input
           placeHolder="Enter a customer's phone number"
           className="form-control"

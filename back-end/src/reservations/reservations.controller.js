@@ -92,9 +92,10 @@ function hasValidDate(req, res, next) {
   // is on UTC.
   let today = new Date(`${formatDateNow()} 00:00:00 UTC`);
   //we are assuming that the store closes at midnight. or 12am est
+
+  console.log(date);
   if (date >= today) {
     // date + 1 to allign date with western hemisphere date, if confused lookup getDay() returns wrong value
-
     if (date.getDay() + 1 == 2) {
       next({
         status: 400,
@@ -117,7 +118,20 @@ function hasValidTime(req, res, next) {
   )
     .toJSON()
     .slice(11, 19);
-  const todayTime = new Date().toJSON().slice(11, 19);
+
+  const easternTimeSubmitted = new Date(
+    `${data.reservation_date} ${data.reservation_time}`
+  );
+
+  const ifToday = () => {
+    const today = new Date("2023-2-27").toJSON().slice(0, 10);
+
+    if (today === data.reservation_date) {
+      return true;
+    }
+  };
+  //ifToday checks if reservation date is equal to todays date.
+
   // the store opens at 10:30am but since we converted to UTC time
   // the store opens at 3:30pm since UTC is 5 hours ahead of eastern timezone.
 
@@ -131,26 +145,34 @@ function hasValidTime(req, res, next) {
   // 0330 10:30PM/3:30AM UTC CLOSE
   // 0500 12:00AM/5:00AM UTC MIDNIGHT
 
+  //Checks if after midnight but before opening
   if (reservationTime < "15:30:00" && reservationTime > "05:00:00") {
     next({
       status: 400,
       message: `We open at 10:30am!!!`,
     });
+    //Checks if after cutoff but before closing
   } else if (reservationTime > "02:30:00" && reservationTime < "03:30:00") {
     next({
       status: 400,
       message: `Sorry, we are not allowed to schedule a reservation within an hour before closing!`,
     });
+    //Checks after closing but before midnight
   } else if (reservationTime > "03:30:00" && reservationTime <= "05:00:00") {
     next({
       status: 400,
       message: `Sorry, but we are closed at that time!`,
     });
-  } else if (reservationTime < todayTime) {
-    next({
-      status: 400,
-      message: `Sorry, that time is no longer available!`,
-    });
+    //Finally if it is today we compare real time with reservation time
+  } else if (ifToday()) {
+    if (easternTimeSubmitted < new Date()) {
+      next({
+        status: 400,
+        message: `Sorry, this time is no longer available.`,
+      });
+    } else {
+      return next();
+    }
   } else {
     next();
   }

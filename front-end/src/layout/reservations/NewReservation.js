@@ -31,7 +31,7 @@ function NewReservation() {
   if (error) console.log(error);
 
   return (
-    <div>
+    <div className="new-reservation">
       <ErrorAlert error={error} />
       <h4>New Reservation</h4>
       <form onSubmit={submitHandler} className="reservation-form">
@@ -127,7 +127,9 @@ function NewReservation() {
             }}
           />
         </div>
-        <button className="btn bottom-button">Submit</button>
+        <div className="reservation-form-btn">
+          <button className="btn bottom-button">Submit</button>
+        </div>
       </form>
     </div>
   );

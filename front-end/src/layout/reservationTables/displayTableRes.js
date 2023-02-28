@@ -62,7 +62,7 @@ function DisplayTableReservations({ refreshDashboard }) {
                 {table.table_name}
               </h5>
             </div>
-            <div className="card-body">
+            <div className="card-body table-cancel">
               <p>Capacity: {table.capacity}</p>
               <p data-table-id-status={table.table_id}>
                 Availability: {table.reservation_id ? "occupied" : "unoccupied"}
@@ -86,8 +86,10 @@ function DisplayTableReservations({ refreshDashboard }) {
     }
   };
   return (
-    <div>
-      <h2>Table Reservations</h2>
+    <div className="table-titles">
+      <h2 className="tables-title" style={{ alignSelf: "center" }}>
+        Table Reservations
+      </h2>
       <div className="bottom-tables">{list()}</div>
     </div>
   );

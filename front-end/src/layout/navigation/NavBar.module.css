@@ -2,8 +2,32 @@
   display:none;
 }
 
+.NavBar .Navigation {
+  display:flex;
+  justify-content:center;
+}
 
-@media (max-width: 768px) {
+
+.NavBar .Navigation ul{
+ display:flex;
+ flex-direction:row;
+}
+
+.NavBar .Navigation ul li{
+  margin-left:10px;
+  margin-right:10px;
+ }
+
+ .menu_text {
+  color:white;
+ }
+ 
+ .menu_icons {
+  color:white
+ }
+
+
+@media (max-width: 688px) {
   .NavBar .Navigation {
     display:none;
   }
@@ -42,4 +66,4 @@
     color: white;
   }
   
- }
+}

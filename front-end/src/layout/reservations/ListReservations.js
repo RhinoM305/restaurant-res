@@ -22,7 +22,7 @@ function ListReservations({ data, show = false, load, setError }) {
     }
   }
 
-  return data.map((reservation) => {
+  const list = data.map((reservation) => {
     if (
       (reservation.status === "finished" && !show) ||
       reservation.status === "cancelled"
@@ -31,7 +31,7 @@ function ListReservations({ data, show = false, load, setError }) {
     }
 
     return (
-      <div className="card">
+      <div className="card desk-card">
         <div className="card-body">
           <h5 className="card-title">Reservation: {reservation.first_name}</h5>
           <p>Last Name: {reservation.last_name}</p>
@@ -40,7 +40,7 @@ function ListReservations({ data, show = false, load, setError }) {
           <p>Time: {reservation.reservation_time}</p>
           <p>People: {reservation.people}</p>
           <p>Status: {reservation.status}</p>
-          <div>
+          <div className="reservation-form-btn">
             {reservation.status === "booked" && (
               <Link
                 to={`/reservations/${reservation.reservation_id}/seat`}
@@ -69,6 +69,8 @@ function ListReservations({ data, show = false, load, setError }) {
       </div>
     );
   });
+
+  return <div className="list-reservation">{list}</div>;
 }
 
 export default ListReservations;

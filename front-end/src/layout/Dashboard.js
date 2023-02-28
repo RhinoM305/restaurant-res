@@ -62,17 +62,12 @@ function Dashboard({ date }) {
 
     return (
       <React.Fragment>
-        <div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-            }}
-          >
+        <div className="dashboard-buttons">
+          <div className="dashboard-date-selct">
             {prev && (
               <button
                 onClick={() => clickHandler("prev", prev)}
-                className="col btn dashboard-date-btn"
+                className="btn dashboard-date-btn"
               >
                 {prev}
               </button>
@@ -80,15 +75,14 @@ function Dashboard({ date }) {
             {next && (
               <button
                 onClick={() => clickHandler("next", next)}
-                className="col btn dashboard-date-btn"
+                className="btn dashboard-date-btn"
               >
                 {next}
               </button>
             )}
           </div>
           <button
-            className="col btn btn-dark"
-            style={{ backgroundColor: "black" }}
+            className="btn home-btn"
             onClick={() => {
               setReservations([]);
               history.push(`/dashboard`);
@@ -112,10 +106,12 @@ function Dashboard({ date }) {
 
   return (
     <main>
-      <h1>Dashboard</h1>
+      <h1 className="ml-2">Dashboard</h1>
       {dateDisplay()}
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for today</h4>
+      <div className="mb-3">
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <h4 className="mb-0">Reservations for today</h4>
+        </div>
       </div>
       <ErrorAlert error={error} />
       {reservations[0] && (

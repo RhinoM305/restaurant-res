@@ -141,14 +141,16 @@ function EditReservation() {
               }}
             />
           </div>
-          <button className="btn bottom-button">Submit</button>
-          <button
-            type="button"
-            className="btn bottom-button-cancel"
-            onClick={() => history.goBack()}
-          >
-            Cancel
-          </button>
+          <div className="reservation-form-btn">
+            <button className="btn bottom-button">Submit</button>
+            <button
+              type="button"
+              className="btn bottom-button-cancel"
+              onClick={() => history.goBack()}
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     );

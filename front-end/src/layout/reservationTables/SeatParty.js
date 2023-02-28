@@ -55,28 +55,30 @@ function SeatParty() {
   }
 
   return (
-    <div className="tables-reservation-form">
+    <div className="tables-form">
       <h3>Please Seat Selected Party </h3>
       <ErrorAlert error={error} />
       <form onSubmit={submitHandler}>
-        <select
-          className="col-sm-2"
-          name="table_id"
-          value={option}
-          required
-          onChange={handleChange}
-        >
-          <option value="">--Please Select A Table--</option>
-          {list()}
-        </select>
-        <button className="btn bottom-button mt-2">Submit</button>
-        <button
-          type="button"
-          className="btn bottom-button-cancel"
-          onClick={() => history.goBack()}
-        >
-          Cancel
-        </button>
+        <div className="seat-form">
+          <select
+            name="table_id"
+            value={option}
+            required
+            onChange={handleChange}
+          >
+            <option value="">--Please Select A Table--</option>
+            {list()}
+          </select>
+        </div>
+        <div className="seat-buttons">
+          <button className="btn bottom-button mt-2">Submit</button>
+          <button
+            className="btn bottom-button-cancel"
+            onClick={() => history.goBack()}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

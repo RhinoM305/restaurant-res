@@ -16,18 +16,10 @@ function Layout() {
   return (
     <div className="container-fluid background">
       <div className="row h-100">
-        <div
-          className="col-md-6 side-bar"
-          style={{
-            order: 2,
-            position: "fixed",
-            zIndex: "999",
-            bottom: "0",
-          }}
-        >
+        <div className="bar">
           <NavBar />
         </div>
-        <div className="col-md-6" style={{ order: 1 }}>
+        <div className="routes">
           <Routes />
         </div>
       </div>
