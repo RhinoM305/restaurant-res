@@ -7,7 +7,9 @@ function readByDate(date) {
   return knex("reservations")
     .select("*")
     .whereNotIn("status", ["cancelled", "finished"])
-    .andWhere("reservation_date", "=", date);
+    .andWhere("reservation_date", "=", date)
+    .orderBy("reservation_date")
+    .orderBy("reservation_time");
 }
 
 function readByPhone(mobile_number) {

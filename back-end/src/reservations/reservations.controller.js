@@ -14,7 +14,8 @@ const hasRequiredProperties = hasProperties(
   "last_name",
   "mobile_number",
   "reservation_date",
-  "reservation_time"
+  "reservation_time",
+  "people"
 );
 
 const VALID_PROPERTIES = [
@@ -74,7 +75,7 @@ async function reservationsExistUsingDateOrPhone(req, res, next) {
     } else {
       next({
         status: 404,
-        message: "No reservations found for given date.",
+        message: `No reservations found for given date.`,
       });
     }
   }
@@ -98,13 +99,13 @@ function hasValidDate(req, res, next) {
     if (date.getDay() + 1 == 2) {
       next({
         status: 400,
-        message: `We are not open on tuesdays!`,
+        message: `closed`,
       });
     } else next();
   } else {
     next({
       status: 400,
-      message: `This is in the past!!! ${data.reservation_date}`,
+      message: `future`,
     });
   }
 }
@@ -177,10 +178,56 @@ function hasValidTime(req, res, next) {
   }
 }
 
-async function reservationExistsUsingReservationID(req, res, next) {
-  const { reservationID } = req.params;
+function hasDate(req, res, next) {
+  const { reservation_date } = req.body.data;
 
-  const reservation = await service.read(reservationID);
+  const date = new Date(reservation_date);
+
+  if (isNaN(date.getDate())) {
+    next({
+      status: 400,
+      message: `reservation_date`,
+    });
+  } else {
+    next();
+  }
+}
+
+function hasTime(req, res, next) {
+  let { reservation_time } = req.body.data;
+  if (reservation_time.length === 5) {
+    reservation_time = `${reservation_time}:00`;
+  }
+
+  var timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+
+  if (timeRegex.test(reservation_time)) {
+    next();
+  } else {
+    next({
+      status: 400,
+      message: `reservation_time`,
+    });
+  }
+}
+
+function peopleNum(req, res, next) {
+  let { people } = req.body.data;
+
+  if (Number.isInteger(people)) {
+    next();
+  } else {
+    next({
+      status: 400,
+      message: "people",
+    });
+  }
+}
+
+async function reservationExistsUsingReservationID(req, res, next) {
+  const { reservation_id } = req.params;
+
+  const reservation = await service.read(reservation_id);
 
   if (reservation) {
     res.locals.reservation = reservation;
@@ -188,13 +235,13 @@ async function reservationExistsUsingReservationID(req, res, next) {
   }
   return next({
     status: 404,
-    message: "Reservation not found",
+    message: `Reservation ${reservation_id} not found`,
   });
 }
 
 async function create(req, res) {
   const newCreation = await service.create(req.body.data);
-  res.status(201).json({ newCreation });
+  res.status(201).send({ data: newCreation });
 }
 
 async function readByDateOrPhone(req, res) {
@@ -208,13 +255,13 @@ async function list(req, res) {
 }
 
 async function read(req, res) {
-  const { reservationID } = req.params;
+  const { reservation_id } = req.params;
 
-  res.json({ data: await service.read(reservationID) });
+  res.json({ data: await service.read(reservation_id) });
 }
 
 async function update(req, res) {
-  const { reservationID } = req.params;
+  const { reservation_id } = req.params;
   const updatedReservation = {
     ...req.body.data,
     reservation_id: res.locals.reservation.reservation_id,
@@ -222,7 +269,7 @@ async function update(req, res) {
 
   await service.update(updatedReservation);
 
-  const data = await service.read(reservationID);
+  const data = await service.read(reservation_id);
 
   res.json({ data });
 }
@@ -231,6 +278,9 @@ module.exports = {
   create: [
     hasOnlyValidProperties,
     hasRequiredProperties,
+    hasDate,
+    hasTime,
+    peopleNum,
     hasValidDate,
     hasValidTime,
     asyncErrorBoundary(create),
@@ -240,5 +290,5 @@ module.exports = {
     asyncErrorBoundary(readByDateOrPhone),
   ],
   update: [reservationExistsUsingReservationID, asyncErrorBoundary(update)],
-  read: [reservationExistsUsingReservationID, read],
+  read: [reservationExistsUsingReservationID, asyncErrorBoundary(read)],
 };
