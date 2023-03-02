@@ -48,16 +48,36 @@ async function tableExists(req, res, next) {
   });
 }
 
+async function reservationStatus(req, res, next) {
+  const { reservation_id } = req.body.data;
+
+  const reservation = await reservationService.read(reservation_id);
+
+  res.locals.reservation = reservation;
+
+  if (reservation.status === "seated") {
+    return next({
+      status: 400,
+      message: "seated",
+    });
+  } else if (reservation.status === "finished") {
+    return next({
+      status: 400,
+      message: "finished",
+    });
+  } else {
+    next();
+  }
+}
+
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.body.data;
 
   const reservation = await reservationService.read(reservation_id);
-  console.log(reservation);
   if (reservation) {
-    console.log("done");
-    next();
+    return next();
   } else {
-    next({
+    return next({
       status: 404,
       message: `${reservation_id}`,
     });
@@ -96,7 +116,7 @@ function isTableNull(req, res, next) {
   if (res.locals.table.reservation_id === null) {
     next({
       status: 400,
-      message: `Table is already empty!`,
+      message: `not occupied!`,
     });
   }
   next();
@@ -144,35 +164,44 @@ async function update(req, res, next) {
   next();
 }
 
-async function updateReservationStatus(req, res, next) {
-  const { reservation_id, status } = req.body.data;
-  const reservation = await reservationService.read(reservation_id);
-  res.locals.reservation = { ...reservation, status: status };
-  next();
-}
-
 async function destroy(req, res) {
   const updatedTable = { ...res.locals.table, reservation_id: null };
+
+  const reservation = await reservationService.read(
+    res.locals.table.reservation_id
+  );
+
+  const updatedReservation = {
+    ...reservation,
+    status: "finished",
+  };
+
+  // Change status of reservtion locally.
+
+  await reservationService.update(updatedReservation);
+
   await service.destroy(updatedTable);
-  res.sendStatus(204);
+  res.status(200).json("finished");
 }
 
 async function create(req, res) {
   const newCreation = await service.create(req.body.data);
   res.status(201).json({ data: newCreation });
 }
+
 async function transaction(req, res, next) {
-  console.log(res.locals.updatedTable);
   knex.transaction((trx) => {
     service
       .update(res.locals.updatedTable)
       .transacting(trx)
       .then(() =>
-        reservationService.update(res.locals.reservation).transacting(trx)
+        reservationService
+          .update({ ...res.locals.reservation, status: "seated" })
+          .transacting(trx)
       )
       .then(() => {
         trx.commit();
-        res.send({ data: "Update Success!!!" });
+        res.status(200).send({ data: "Update Success!!!" });
       })
       .catch((err) => {
         trx.rollback();
@@ -194,13 +223,13 @@ module.exports = {
   list: [asyncErrorBoundary(list)],
   update: [
     hasRequiredPropsForSeat,
-    reservationExists,
-    tableExists,
-    tableHasEnoughSeats,
-    tableIsAvailable,
-    updateReservationStatus,
-    update,
-    transaction,
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(reservationStatus),
+    asyncErrorBoundary(tableExists),
+    asyncErrorBoundary(tableHasEnoughSeats),
+    asyncErrorBoundary(tableIsAvailable),
+    asyncErrorBoundary(update),
+    asyncErrorBoundary(transaction),
   ],
   read: [tableExists, read],
   create: [

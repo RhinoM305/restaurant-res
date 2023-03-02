@@ -28,16 +28,22 @@ function NewReservation() {
       .catch(setError);
   };
 
-  if (error) console.log(error);
+  if (error) {
+    console.log(error);
+  }
 
   return (
     <div className="new-reservation">
+      {reservationForm.reservation_date < today() && (
+        <ErrorAlert error={{ message: "future" }} />
+      )}
       <ErrorAlert error={error} />
       <h4>New Reservation</h4>
       <form onSubmit={submitHandler} className="reservation-form">
         <div className="form-group">
           <label htmlFor="reservationFirstNameInput">First Name</label>
           <input
+            name="first_name"
             className="form-control"
             id="reservationFirstNameInput"
             placeholder="first name"
@@ -51,6 +57,7 @@ function NewReservation() {
           />
           <label htmlFor="reservationLastNameInput">Last Name</label>
           <input
+            name="last_name"
             className="form-control"
             id="reservationLastNameInput"
             placeholder="last name"
@@ -64,6 +71,7 @@ function NewReservation() {
           />
           <label htmlFor="reservationMobileNumberInput">Mobile Number</label>
           <input
+            name="mobile_number"
             className="form-control"
             id="reservationMobileNumberInput"
             placeholder="phone number"
@@ -82,10 +90,10 @@ function NewReservation() {
           />
           <label htmlFor="reservationDateInput">Date</label>
           <input
+            name="reservation_date"
             type="date"
             className="form-control"
             placeholder="YYYY-MM-DD"
-            min={today()}
             pattern="\d{4}-\d{2}-\d{2}"
             required
             onChange={(update) => {
@@ -97,6 +105,7 @@ function NewReservation() {
           />
           <label htmlFor="reservationTimeInput">Time</label>
           <input
+            name="reservation_time"
             type="time"
             className="form-control"
             placeholder="HH:MM"
@@ -113,8 +122,8 @@ function NewReservation() {
             Number of people attending
           </label>
           <input
+            name="people"
             type="number"
-            disabled1={true}
             className="form-control"
             max="30"
             min="1"
@@ -128,7 +137,16 @@ function NewReservation() {
           />
         </div>
         <div className="reservation-form-btn">
-          <button className="btn bottom-button">Submit</button>
+          <button type="submit" className="btn bottom-button">
+            Submit
+          </button>
+          <button
+            type="button"
+            className="btn bottom-button-cancel"
+            onClick={() => history.goBack()}
+          >
+            cancel
+          </button>
         </div>
       </form>
     </div>

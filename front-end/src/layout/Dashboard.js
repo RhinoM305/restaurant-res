@@ -106,7 +106,7 @@ function Dashboard({ date }) {
 
   return (
     <main>
-      <h1 className="ml-2">Dashboard</h1>
+      <h2 className="ml-2">Dashboard</h2>
       {dateDisplay()}
       <div className="mb-3">
         <div style={{ display: "flex", justifyContent: "center" }}>

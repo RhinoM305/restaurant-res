@@ -7,6 +7,10 @@
   justify-content:center;
 }
 
+.NavBar {
+  display:flex;
+  flex-direction:column;
+}
 
 .NavBar .Navigation ul{
  display:flex;
@@ -28,6 +32,7 @@
 
 
 @media (max-width: 688px) {
+  
   .NavBar .Navigation {
     display:none;
   }

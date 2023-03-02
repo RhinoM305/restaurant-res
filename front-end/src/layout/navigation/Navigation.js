@@ -3,10 +3,11 @@ import NavLinks from "./NavLinks";
 
 const Navigation = () => {
   return (
-    <nav className={classes.Navigation}>
-      <NavLinks />;
-    </nav>
+    <div>
+      <nav className={classes.Navigation}>
+        <NavLinks />
+      </nav>
+    </div>
   );
 };
-
 export default Navigation;

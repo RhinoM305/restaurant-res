@@ -2,16 +2,14 @@ import React, { useState, useEffect } from "react";
 import {
   getAllTableReservations,
   deleteTableReservation,
-  updateReservation,
 } from "../../utils/api";
-import findTableID from "./findTableID";
-// import ErrorAlert from "../layour/ErrorAlert";
+import ErrorAlert from "../ErrorAlert";
 
 import "./tables.css";
 
 function DisplayTableReservations({ refreshDashboard }) {
   const [tables, setTables] = useState();
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
 
   useEffect(loadTableReservations, []);
 
@@ -28,9 +26,8 @@ function DisplayTableReservations({ refreshDashboard }) {
     const tableID = event.target.value;
     const abortController = new AbortController();
 
-    if (window.confirm("Are you sure?") == true) {
+    if (window.confirm("Is this table ready to seat new guests?") === true) {
       deleteTableReservation(tableID, abortController.signal)
-        .then(changeStatus("finished", reservationID))
         .then(loadTableReservations)
         .then(() => refreshDashboard())
         .catch(setError);
@@ -39,17 +36,6 @@ function DisplayTableReservations({ refreshDashboard }) {
     } else {
       return;
     }
-  }
-
-  function changeStatus(status, reservationID) {
-    const abortController = new AbortController();
-
-    updateReservation(
-      { data: { status: status } },
-      Number(reservationID),
-      abortController.signal
-    ).catch(setError);
-    return () => abortController.abort();
   }
 
   const list = () => {
@@ -65,7 +51,7 @@ function DisplayTableReservations({ refreshDashboard }) {
             <div className="card-body table-cancel">
               <p>Capacity: {table.capacity}</p>
               <p data-table-id-status={table.table_id}>
-                Availability: {table.reservation_id ? "occupied" : "unoccupied"}
+                {table.reservation_id ? "occupied" : "free"}
               </p>
               {table.reservation_id && (
                 <button
@@ -90,6 +76,7 @@ function DisplayTableReservations({ refreshDashboard }) {
       <h2 className="tables-title" style={{ alignSelf: "center" }}>
         Table Reservations
       </h2>
+      <ErrorAlert error={error} />
       <div className="bottom-tables">{list()}</div>
     </div>
   );

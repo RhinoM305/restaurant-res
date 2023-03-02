@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { getSpecificReservation, updateReservation } from "../../utils/api";
-import { today } from "../../utils/date-time";
 import formatPhoneNumber from "../../utils/formatPhoneNumber";
 import ErrorAlert from "../ErrorAlert";
 
@@ -15,7 +14,7 @@ function EditReservation() {
   const { reservation_id } = useParams();
   const history = useHistory();
 
-  useEffect(loadReservation, []);
+  useEffect(loadReservation, [reservation_id]);
 
   function loadReservation() {
     const abortController = new AbortController();
@@ -34,7 +33,9 @@ function EditReservation() {
       Number(reservation_id),
       abortController.signal
     )
-      .then(() => history.goBack())
+      .then((value) =>
+        history.push(`/dashboard?date=${value.reservation_date.slice(0, 10)}`)
+      )
       .catch(setError);
     return () => abortController.abort();
   }
@@ -48,6 +49,7 @@ function EditReservation() {
           <div className="form-group">
             <label htmlFor="reservationFirstNameInput">First Name</label>
             <input
+              name="first_name"
               value={reservation.first_name}
               className="form-control"
               id="reservationFirstNameInput"
@@ -62,6 +64,7 @@ function EditReservation() {
             />
             <label htmlFor="reservationLastNameInput">Last Name</label>
             <input
+              name="last_name"
               value={reservation.last_name}
               className="form-control"
               id="reservationLastNameInput"
@@ -76,6 +79,7 @@ function EditReservation() {
             />
             <label htmlFor="reservationMobileNumberInput">Mobile Number</label>
             <input
+              name="mobile_number"
               value={reservation.mobile_number}
               className="form-control"
               id="reservationMobileNumberInput"
@@ -94,11 +98,11 @@ function EditReservation() {
             />
             <label htmlFor="reservationDateInput">Date</label>
             <input
+              name="reservation_date"
               type="date"
               value={reservation.reservation_date.slice(0, 10)}
               className="form-control"
               placeholder="YYYY-MM-DD"
-              min={today()}
               pattern="\d{4}-\d{2}-\d{2}"
               required
               onChange={(update) => {
@@ -110,6 +114,7 @@ function EditReservation() {
             />
             <label htmlFor="reservationTimeInput">Time</label>
             <input
+              name="reservation_time"
               value={reservation.reservation_time}
               type="time"
               className="form-control"
@@ -127,9 +132,9 @@ function EditReservation() {
               Number of people attending
             </label>
             <input
+              name="people"
               value={reservation.people || 1}
               type="number"
-              disabled1={true}
               className="form-control"
               max="30"
               min="1"
@@ -142,13 +147,16 @@ function EditReservation() {
             />
           </div>
           <div className="reservation-form-btn">
-            <button className="btn bottom-button">Submit</button>
+            <button type="submit" className="btn bottom-button">
+              Submit
+            </button>
             <button
               type="button"
+              data-reservation-id-cancel={reservation.reservation_id}
               className="btn bottom-button-cancel"
               onClick={() => history.goBack()}
             >
-              Cancel
+              cancel
             </button>
           </div>
         </form>

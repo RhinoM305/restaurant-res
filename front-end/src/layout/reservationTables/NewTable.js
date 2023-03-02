@@ -6,13 +6,11 @@ import ErrorAlert from "../ErrorAlert";
 import "./tables.css";
 
 function NewTable() {
-  const [table, setTable] = useState({ table_name: "", capacity: 1 });
+  const [table, setTable] = useState({ table_name: "", capacity: null });
   const [error, setError] = useState("");
   const history = useHistory();
-
   const submitHandler = (event) => {
     event.preventDefault();
-
     const abortController = new AbortController();
     createTable({ data: table })
       .then(() => history.push("/dashboard"))
@@ -29,6 +27,8 @@ function NewTable() {
         <div className="form-group">
           <label>Table Name</label>
           <input
+            name="table_name"
+            required
             className="form-control"
             onChange={(update) => {
               setTable({
@@ -39,19 +39,21 @@ function NewTable() {
           ></input>
           <label>Capacity</label>
           <input
+            name="capacity"
             className="form-control"
             type="number"
-            value={table.capacity || 1}
             onChange={(update) => {
               setTable({
                 ...table,
-                capacity: update.target.value,
+                capacity: Number(update.target.value),
               });
             }}
           ></input>
         </div>
         <div className="tables-reservation-form-buttons">
-          <button className="btn bottom-button">submit</button>
+          <button type="submit" className="btn bottom-button">
+            submit
+          </button>
           <button
             className="btn bottom-button-cancel"
             onClick={() => history.goBack()}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { updateReservation } from "../../utils/api";
+import { statusChange } from "../../utils/api";
 
 function ListReservations({ data, show = false, load, setError }) {
   // show is set to default value which is used to hyde the reservations
@@ -12,11 +12,7 @@ function ListReservations({ data, show = false, load, setError }) {
     const abortController = new AbortController();
 
     if (window.confirm("Do you want to cancel this reservation?")) {
-      updateReservation(
-        { data: { status: "cancelled" } },
-        reservationID,
-        abortController.signal
-      )
+      statusChange(reservationID, "cancelled", abortController.signal)
         .then(() => load())
         .catch(setError);
     }
@@ -27,7 +23,7 @@ function ListReservations({ data, show = false, load, setError }) {
       (reservation.status === "finished" && !show) ||
       reservation.status === "cancelled"
     ) {
-      return;
+      return undefined;
     }
 
     return (
@@ -39,7 +35,9 @@ function ListReservations({ data, show = false, load, setError }) {
           <p>Date: {reservation.reservation_date}</p>
           <p>Time: {reservation.reservation_time}</p>
           <p>People: {reservation.people}</p>
-          <p>Status: {reservation.status}</p>
+          <p data-reservation-id-status={reservation.reservation_id}>
+            {reservation.status}
+          </p>
           <div className="reservation-form-btn">
             {reservation.status === "booked" && (
               <Link

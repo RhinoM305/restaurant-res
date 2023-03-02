@@ -30,8 +30,13 @@ function SeatParty() {
     if (tables) {
       return tables.map((table) => {
         if (!table.reservation_id) {
-          return <option value={table.table_name}>{table.table_name}</option>;
+          return (
+            <option value={table.table_name} key={table.table_id}>
+              {table.table_name} - {table.capacity}
+            </option>
+          );
         }
+        return undefined;
       });
     }
   };
@@ -45,19 +50,19 @@ function SeatParty() {
     const abortController = new AbortController();
 
     assignReservationToTable(
-      { data: { reservation_id: Number(reservation_id), status: "seated" } },
+      { data: { reservation_id: Number(reservation_id) } },
       findTableID(option, tables),
       abortController.signal
     )
-      .then(() => history.goBack())
+      .then(() => history.push("/dashboard"))
       .catch(setError);
     return () => abortController.abort();
   }
 
   return (
     <div className="tables-form">
-      <h3>Please Seat Selected Party </h3>
       <ErrorAlert error={error} />
+      <h3>Please Seat Selected Party </h3>
       <form onSubmit={submitHandler}>
         <div className="seat-form">
           <select
@@ -71,7 +76,9 @@ function SeatParty() {
           </select>
         </div>
         <div className="seat-buttons">
-          <button className="btn bottom-button mt-2">Submit</button>
+          <button type="submit" className="btn bottom-button mt-2">
+            Submit
+          </button>
           <button
             className="btn bottom-button-cancel"
             onClick={() => history.goBack()}

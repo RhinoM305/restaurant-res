@@ -25,6 +25,7 @@ const VALID_PROPERTIES = [
   "reservation_date",
   "reservation_time",
   "people",
+  "status",
 ];
 
 function hasOnlyValidProperties(req, res, next) {
@@ -48,20 +49,18 @@ async function reservationsExistUsingDateOrPhone(req, res, next) {
   // the reason behind that is because I used the data in params to filter out the reservations,
   // for the specifc date, this method of validation will also be diffrent because it will pull multiple reservations,
   // rather than just one reservation like the other simlair middleware function.
-  let { mobile_phone, date } = req.query;
+  let { mobile_number, date } = req.query;
 
+  const queryParam = req.query;
   let reservations = null;
 
-  if (mobile_phone) {
-    reservations = await service.readByPhone(mobile_phone);
+  if (Object.keys(queryParam)[0] === "mobile_number") {
+    reservations = await service.readByPhone(mobile_number);
     if (reservations[0]) {
       res.locals.reservations = reservations;
       next();
     } else {
-      next({
-        status: 404,
-        message: "No reservations found for given phone number.",
-      });
+      res.json({ data: [] });
     }
   } else {
     if (!date) {
@@ -93,6 +92,19 @@ function hasValidDate(req, res, next) {
   // is on UTC.
   let today = new Date(`${formatDateNow()} 00:00:00 UTC`);
   //we are assuming that the store closes at midnight. or 12am est
+  let errors = [];
+
+  // if (date < today) {
+  //   errors.push({ field: "future", message: "future" });
+  // } else if (date.getDay() + 1 == 2) {
+  //   errors.push({ field: "closed", message: "closed" });
+  // } else {
+  //   if (errors) {
+  //     res.status(400).json({ errors });
+  //   } else {
+  //     next();
+  //   }
+  // }
 
   if (date >= today) {
     // date + 1 to allign date with western hemisphere date, if confused lookup getDay() returns wrong value
@@ -124,7 +136,7 @@ function hasValidTime(req, res, next) {
   );
 
   const ifToday = () => {
-    const today = new Date("2023-2-27").toJSON().slice(0, 10);
+    const today = new Date().toJSON().slice(0, 10);
 
     if (today === data.reservation_date) {
       return true;
@@ -216,6 +228,11 @@ function peopleNum(req, res, next) {
 
   if (Number.isInteger(people)) {
     next();
+  } else if (people === 0) {
+    next({
+      status: 400,
+      message: "people",
+    });
   } else {
     next({
       status: 400,
@@ -226,7 +243,6 @@ function peopleNum(req, res, next) {
 
 async function reservationExistsUsingReservationID(req, res, next) {
   const { reservation_id } = req.params;
-
   const reservation = await service.read(reservation_id);
 
   if (reservation) {
@@ -235,8 +251,44 @@ async function reservationExistsUsingReservationID(req, res, next) {
   }
   return next({
     status: 404,
-    message: `Reservation ${reservation_id} not found`,
+    message: `${reservation_id}`,
   });
+}
+
+async function checkStatus(req, res, next) {
+  const { status } = req.body.data;
+  const { reservation_id } = req.params;
+
+  const reservation = await service.read(reservation_id);
+  if (reservation.status === "finished") {
+    next({
+      status: 400,
+      message: "finished",
+    });
+  } else if (status === "unknown") {
+    next({
+      status: 400,
+      message: "unknown",
+    });
+  } else {
+    next();
+  }
+}
+
+function validStatus(req, res, next) {
+  const reservation = req.body.data;
+
+  if (reservation.status) {
+    if (reservation.status === "seated") {
+      next({ status: 400, message: "seated" });
+    } else if (reservation.status === "finished") {
+      next({ status: 400, message: "finished" });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 }
 
 async function create(req, res) {
@@ -260,6 +312,16 @@ async function read(req, res) {
   res.json({ data: await service.read(reservation_id) });
 }
 
+async function statusUpdate(req, res) {
+  const { status } = req.body.data;
+
+  const reservation = res.locals.reservation;
+  const updatedStatus = { ...reservation, status: status };
+  await service.update(updatedStatus);
+
+  res.status(200).json({ data: updatedStatus });
+}
+
 async function update(req, res) {
   const { reservation_id } = req.params;
   const updatedReservation = {
@@ -281,6 +343,7 @@ module.exports = {
     hasDate,
     hasTime,
     peopleNum,
+    validStatus,
     hasValidDate,
     hasValidTime,
     asyncErrorBoundary(create),
@@ -289,6 +352,18 @@ module.exports = {
     asyncErrorBoundary(reservationsExistUsingDateOrPhone),
     asyncErrorBoundary(readByDateOrPhone),
   ],
-  update: [reservationExistsUsingReservationID, asyncErrorBoundary(update)],
+  update: [
+    reservationExistsUsingReservationID,
+    hasRequiredProperties,
+    peopleNum,
+    hasTime,
+    hasDate,
+    asyncErrorBoundary(update),
+  ],
   read: [reservationExistsUsingReservationID, asyncErrorBoundary(read)],
+  statusUpdate: [
+    reservationExistsUsingReservationID,
+    checkStatus,
+    asyncErrorBoundary(statusUpdate),
+  ],
 };

@@ -18,6 +18,11 @@ function Search() {
     const abortController = new AbortController();
     searchReservationsWithPhone(number, abortController.signal)
       .then(setReservations)
+      .then(() => {
+        if (reservations.length === 0) {
+          setError({ message: "No reservations found" });
+        }
+      })
       .catch(setError);
 
     return () => abortController.abort();
@@ -30,7 +35,8 @@ function Search() {
       </h4>
       <form onSubmit={submitHandler} className="seat-form">
         <input
-          placeHolder="Enter a customer's phone number"
+          name="mobile_number"
+          placeholder="Enter a customer's phone number"
           className="form-control"
           maxLength="12"
           value={number}
@@ -39,7 +45,9 @@ function Search() {
             setNumber(formattedPhoneNumber);
           }}
         />
-        <button className="btn bottom-button">Find</button>
+        <button type="submit" className="btn bottom-button">
+          Find
+        </button>
       </form>
       <ErrorAlert error={error} />
       {reservations && <ListReservations data={reservations} show={true} />}

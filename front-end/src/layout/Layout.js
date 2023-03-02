@@ -15,6 +15,9 @@ import "./Layout.css";
 function Layout() {
   return (
     <div className="container-fluid background">
+      <title>
+        <h1>periodic tables</h1>
+      </title>
       <div className="row h-100">
         <div className="bar">
           <NavBar />

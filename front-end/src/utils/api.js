@@ -84,7 +84,7 @@ export async function createReservation(data, signal) {
 }
 
 export async function createTable(data, signal) {
-  const url = `${API_BASE_URL}/tables/new`;
+  const url = `${API_BASE_URL}/tables`;
   const options = {
     method: "POST",
     headers,
@@ -108,13 +108,23 @@ export async function assignReservationToTable(data, tableID, signal) {
     body: JSON.stringify(data),
     signal,
   };
-  return await fetchJson(url, options, {});
+  return await fetchJson(url, options);
 }
 
 export async function deleteTableReservation(tableID, signal) {
   const url = `${API_BASE_URL}/tables/${tableID}/seat`;
   const options = {
     method: "DELETE",
+    signal,
+  };
+  return await fetchJson(url, options);
+}
+
+export async function updateReservationStatus(status, reservation_id, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
+  const options = {
+    method: "PUT",
+    body: JSON.stringify(status),
     signal,
   };
   return await fetchJson(url, options);
@@ -128,15 +138,26 @@ export async function updateReservation(data, reservationID, signal) {
     body: JSON.stringify(data),
     signal,
   };
-  return await fetchJson(url, options, {});
+  return await fetchJson(url, options);
 }
 
 export async function searchReservationsWithPhone(number, signal) {
-  const url = new URL(`${API_BASE_URL}/reservations?mobile_phone=${number}`);
+  const url = new URL(`${API_BASE_URL}/reservations?mobile_number=${number}`);
   return await fetchJson(url, { headers, signal }, []);
 }
 
 export async function getSpecificReservation(reservationID, signal) {
   const url = `${API_BASE_URL}/reservations/${reservationID}`;
   return await fetchJson(url, { headers, signal }, []);
+}
+
+export async function statusChange(reservation_id, status, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
+  const options = {
+    method: "PUT",
+    body: JSON.stringify({ data: { status: status } }),
+    headers,
+    signal,
+  };
+  return await fetchJson(url, options, {});
 }
