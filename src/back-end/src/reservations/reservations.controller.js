@@ -353,17 +353,20 @@ module.exports = {
     asyncErrorBoundary(readByDateOrPhone),
   ],
   update: [
-    reservationExistsUsingReservationID,
+    asyncErrorBoundary(reservationExistsUsingReservationID),
     hasRequiredProperties,
     peopleNum,
     hasTime,
     hasDate,
     asyncErrorBoundary(update),
   ],
-  read: [reservationExistsUsingReservationID, asyncErrorBoundary(read)],
+  read: [
+    asyncErrorBoundary(reservationExistsUsingReservationID),
+    asyncErrorBoundary(read),
+  ],
   statusUpdate: [
-    reservationExistsUsingReservationID,
-    checkStatus,
+    asyncErrorBoundary(reservationExistsUsingReservationID),
+    asyncErrorBoundary(checkStatus),
     asyncErrorBoundary(statusUpdate),
   ],
 };

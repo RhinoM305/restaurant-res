@@ -239,5 +239,9 @@ module.exports = {
     validCapacity,
     asyncErrorBoundary(create),
   ],
-  delete: [tableExists, isTableNull, asyncErrorBoundary(destroy)],
+  delete: [
+    asyncErrorBoundary(tableExists),
+    isTableNull,
+    asyncErrorBoundary(destroy),
+  ],
 };
