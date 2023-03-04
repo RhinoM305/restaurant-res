@@ -115,7 +115,6 @@ function hasValidTime(req, res, next) {
   const today = moment().format().slice(0, 10);
   const reservationDate = data.reservation_date;
   const currentTime = moment().format(`hh:mm:ss`);
-  console.log(reservationTime());
 
   // 1030 10:30AM OPEN
   // 2130 9:30PM RESERVATION CUTOFF
