@@ -91,7 +91,6 @@ function hasValidDate(req, res, next) {
   // is on UTC.
   let today = new Date(`${formatDateNow()} 00:00:00 UTC`);
   //we are assuming that the store closes at midnight. or 12am est
-  let errors = [];
 
   // if (date < today) {
   //   errors.push({ field: "future", message: "future" });
@@ -125,7 +124,7 @@ function hasValidTime(req, res, next) {
   const { data = {} } = req.body;
 
   const reservationTime = new Date(
-    `${data.reservation_date} ${data.reservation_time}`
+    `${data.reservation_date} ${data.reservation_time} UTC`
   )
     .toJSON()
     .slice(11, 19);
@@ -137,6 +136,8 @@ function hasValidTime(req, res, next) {
   const currentTime = new Date().toJSON().slice(11, 19);
 
   const today = new Date(`${formatDateNow()} ${currentTime} UTC`).toJSON();
+  console.log(today);
+  console.log(reservationSubmitted);
 
   const ifToday = () => {
     if (today.slice(0, 10) === data.reservation_date) {
@@ -178,9 +179,7 @@ function hasValidTime(req, res, next) {
     });
     //Finally if it is today we compare real time with reservation time
   } else if (ifToday()) {
-    console.log(reservationSubmitted, new Date());
-    if (reservationSubmitted < new Date()) {
-      console.log("fail");
+    if (today < new Date()) {
       next({
         status: 400,
         message: `Sorry, this time is no longer available.`,
