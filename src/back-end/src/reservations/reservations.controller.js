@@ -115,7 +115,7 @@ function hasValidDate(req, res, next) {
   } else {
     next({
       status: 400,
-      message: `future`,
+      message: `future: ${date} and ${today}`,
     });
   }
 }
@@ -123,15 +123,11 @@ function hasValidDate(req, res, next) {
 function hasValidTime(req, res, next) {
   const { data = {} } = req.body;
 
-  const reservationTime = new Date(
-    `${data.reservation_date} ${data.reservation_time} UTC`
-  )
-    .toJSON()
-    .slice(11, 19);
-
   const reservationSubmitted = new Date(
     `${data.reservation_date} ${data.reservation_time}`
   );
+
+  const reservationTime = reservationSubmitted.toJSON().slice(11, 19);
 
   const currentTime = new Date().toJSON().slice(11, 19);
 
@@ -160,10 +156,11 @@ function hasValidTime(req, res, next) {
   // 0500 12:00AM/5:00AM UTC MIDNIGHT
 
   //Checks if after midnight but before opening
+  console.log(reservationTime);
   if (reservationTime < "15:30:00" && reservationTime > "05:00:00") {
     next({
       status: 400,
-      message: `${reservationSubmitted} and ${today}`,
+      message: `We open at 10:30am!!!`,
     });
     //Checks if after cutoff but before closing
   } else if (reservationTime >= "02:30:00" && reservationTime < "03:30:00") {
