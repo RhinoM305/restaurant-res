@@ -63,23 +63,19 @@ function Dashboard({ date }) {
     return (
       <React.Fragment>
         <div className="dashboard-buttons">
-          <div className="dashboard-date-selct">
-            {prev && (
-              <button
-                onClick={() => clickHandler("prev", prev)}
-                className="btn dashboard-date-btn"
-              >
-                {prev}
-              </button>
-            )}
-            {next && (
-              <button
-                onClick={() => clickHandler("next", next)}
-                className="btn dashboard-date-btn"
-              >
-                {next}
-              </button>
-            )}
+          <div className="dashboard-date-select">
+            <button
+              onClick={() => clickHandler("prev", prev)}
+              className="btn dashboard-date-btn"
+            >
+              {`Previous: ${prev || "-----------"}`}
+            </button>
+            <button
+              onClick={() => clickHandler("next", next)}
+              className="btn dashboard-date-btn"
+            >
+              {`Next: ${next || "-----------"}`}
+            </button>
           </div>
           <button
             className="btn home-btn"
@@ -97,6 +93,9 @@ function Dashboard({ date }) {
   // PON stands for previous or next
   // second param takes in date to parse to link
   function clickHandler(PON, d) {
+    if (!d) {
+      return;
+    }
     if (PON === "prev") {
       history.push(`/dashboard?date=${d}`);
     } else {

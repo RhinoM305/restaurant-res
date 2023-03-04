@@ -17,7 +17,7 @@
   width:100%;
 }
 
-.dashboard-date-selct {
+.dashboard-date-select {
   display:flex;
   align-self:center;
 }
@@ -80,8 +80,8 @@ title {
     flex-grow:0;
     margin-right:10px;
     margin-bottom:10px;
+    width:190px;
   }
-
   .home-btn {
     width:auto;
   }

@@ -36,7 +36,7 @@ function NewReservation() {
 
   return (
     <div className="new-reservation">
-      {reservationForm.reservation_date < today() && (
+      {reservationForm.reservation_date < today() && error && (
         <ErrorAlert error={{ message: "future" }} />
       )}
       <ErrorAlert error={error} />

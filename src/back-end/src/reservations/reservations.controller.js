@@ -5,7 +5,6 @@ const formatDateNow = require("../utils/format-date");
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
-
 // as the name of the function sugests here we use a function (hasProperties) to verify that the listed properties
 // are included in the created reservation
 
@@ -131,14 +130,16 @@ function hasValidTime(req, res, next) {
     .toJSON()
     .slice(11, 19);
 
-  const easternTimeSubmitted = new Date(
+  const reservationSubmitted = new Date(
     `${data.reservation_date} ${data.reservation_time}`
   );
 
-  const ifToday = () => {
-    const today = new Date().toJSON().slice(0, 10);
+  const currentTime = new Date().toJSON().slice(11, 19);
 
-    if (today === data.reservation_date) {
+  const today = new Date(`${formatDateNow()} ${currentTime} UTC`).toJSON();
+
+  const ifToday = () => {
+    if (today.slice(0, 10) === data.reservation_date) {
       return true;
     }
   };
@@ -164,7 +165,7 @@ function hasValidTime(req, res, next) {
       message: `We open at 10:30am!!!`,
     });
     //Checks if after cutoff but before closing
-  } else if (reservationTime > "02:30:00" && reservationTime < "03:30:00") {
+  } else if (reservationTime >= "02:30:00" && reservationTime < "03:30:00") {
     next({
       status: 400,
       message: `Sorry, we are not allowed to schedule a reservation within an hour before closing!`,
@@ -177,7 +178,9 @@ function hasValidTime(req, res, next) {
     });
     //Finally if it is today we compare real time with reservation time
   } else if (ifToday()) {
-    if (easternTimeSubmitted < new Date()) {
+    console.log(reservationSubmitted, new Date());
+    if (reservationSubmitted < new Date()) {
+      console.log("fail");
       next({
         status: 400,
         message: `Sorry, this time is no longer available.`,
