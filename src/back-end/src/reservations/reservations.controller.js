@@ -329,6 +329,8 @@ module.exports = {
     peopleNum,
     hasTime,
     hasDate,
+    hasValidTime,
+    hasValidDate,
     asyncErrorBoundary(update),
   ],
   read: [
