@@ -124,7 +124,7 @@ function hasValidTime(req, res, next) {
   const { data = {} } = req.body;
 
   const reservationSubmitted = new Date(
-    `${data.reservation_date} ${data.reservation_time}`
+    `${data.reservation_date} ${data.reservation_time} UTC `
   );
 
   const reservationTime = reservationSubmitted.toJSON().slice(11, 19);
