@@ -115,7 +115,7 @@ function hasValidDate(req, res, next) {
   } else {
     next({
       status: 400,
-      message: `future`,
+      message: `future ${date} and ${today}`,
     });
   }
 }
