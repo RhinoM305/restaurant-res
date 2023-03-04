@@ -160,7 +160,7 @@ function hasValidTime(req, res, next) {
   if (reservationTime < "15:30:00" && reservationTime > "05:00:00") {
     next({
       status: 400,
-      message: `We open at 10:30am!!!`,
+      message: `We open at 10:30am!!!: ${reservationSubmitted} and ${today}`,
     });
     //Checks if after cutoff but before closing
   } else if (reservationTime >= "02:30:00" && reservationTime < "03:30:00") {
