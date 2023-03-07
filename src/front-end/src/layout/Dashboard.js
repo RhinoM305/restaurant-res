@@ -7,6 +7,7 @@ import ListReservations from "./reservations/ListReservations";
 
 import "./Layout.css";
 
+const moment = require("moment");
 /**
  * Defines the dashboard page.
  * @param date
@@ -16,8 +17,6 @@ import "./Layout.css";
 function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
 
-  const [occupiedDates, setOccupiedDates] = useState([]);
-
   const [error, setError] = useState("");
 
   const history = useHistory();
@@ -25,7 +24,6 @@ function Dashboard({ date }) {
   let indexOfCurrentDate = 0;
 
   useEffect(loadDashboard, [date]);
-  useEffect(getOccupiedDates, []);
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -36,29 +34,10 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-  function getOccupiedDates() {
-    const abortController = new AbortController();
-    setError(null);
-    getAllReservationDates(abortController.signal)
-      .then((data) => {
-        return data.map((date) => date.reservation_date.substring(0, 10));
-      })
-      .then(setOccupiedDates)
-      .catch(setError);
-    return () => abortController.abort();
-  }
-
-  if (occupiedDates[0]) {
-    indexOfCurrentDate = occupiedDates.indexOf(date);
-  }
-
   function dateDisplay() {
-    let prev = occupiedDates[indexOfCurrentDate - 1];
-    let next = occupiedDates[indexOfCurrentDate + 1];
-
-    if (!date) {
-      next = occupiedDates[indexOfCurrentDate];
-    }
+    let today = moment(`${date}`);
+    let prev = today.clone().subtract(1, "day");
+    let next = today.clone().add(1, "day");
 
     return (
       <React.Fragment>
@@ -68,13 +47,13 @@ function Dashboard({ date }) {
               onClick={() => clickHandler("prev", prev)}
               className="btn dashboard-date-btn"
             >
-              {`Previous: ${prev || "-----------"}`}
+              {`Previous: ${prev.format("YYYY-MM-DD") || "-----------"}`}
             </button>
             <button
               onClick={() => clickHandler("next", next)}
               className="btn dashboard-date-btn"
             >
-              {`Next: ${next || "-----------"}`}
+              {`Next: ${next.format("YYYY-MM-DD") || "-----------"}`}
             </button>
           </div>
           <button
@@ -84,7 +63,7 @@ function Dashboard({ date }) {
               history.push(`/dashboard`);
             }}
           >
-            Today's Reservations
+            Today's Reservations: {date}
           </button>
         </div>
       </React.Fragment>
