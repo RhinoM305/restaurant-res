@@ -78,7 +78,6 @@ function Dashboard({ date }) {
       history.push(`/dashboard?date=${d}`);
     } else {
       setReservations([]);
-
       history.push(`/dashboard?date=${d}`);
     }
   }
