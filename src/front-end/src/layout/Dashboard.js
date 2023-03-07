@@ -44,13 +44,13 @@ function Dashboard({ date }) {
         <div className="dashboard-buttons">
           <div className="dashboard-date-select">
             <button
-              onClick={() => clickHandler("prev", prev)}
+              onClick={() => clickHandler("prev", prev.format("YYYY-MM-DD"))}
               className="btn dashboard-date-btn"
             >
               {`Previous: ${prev.format("YYYY-MM-DD") || "-----------"}`}
             </button>
             <button
-              onClick={() => clickHandler("next", next)}
+              onClick={() => clickHandler("next", next.format("YYYY-MM-DD"))}
               className="btn dashboard-date-btn"
             >
               {`Next: ${next.format("YYYY-MM-DD") || "-----------"}`}
@@ -63,7 +63,7 @@ function Dashboard({ date }) {
               history.push(`/dashboard`);
             }}
           >
-            Today's Reservations: {date}
+            Today's Reservations: {moment().format("YYYY-MM-DD")}
           </button>
         </div>
       </React.Fragment>
