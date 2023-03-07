@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, getAllReservationDates } from "../utils/api";
+import { listReservations } from "../utils/api";
 import ErrorAlert from "./ErrorAlert";
 import { useHistory } from "react-router-dom";
 import DisplayTableReservations from "./reservationTables/displayTableRes";
@@ -20,8 +20,6 @@ function Dashboard({ date }) {
   const [error, setError] = useState("");
 
   const history = useHistory();
-
-  let indexOfCurrentDate = 0;
 
   useEffect(loadDashboard, [date]);
 
@@ -76,8 +74,11 @@ function Dashboard({ date }) {
       return;
     }
     if (PON === "prev") {
+      setReservations([]);
       history.push(`/dashboard?date=${d}`);
     } else {
+      setReservations([]);
+
       history.push(`/dashboard?date=${d}`);
     }
   }
