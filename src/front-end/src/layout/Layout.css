@@ -6,9 +6,34 @@
   width:100%;
 }
 
+main h2 {
+  display:flex;
+  justify-content: center;
+}
+
+.dashboard-buttons {
+  display:flex;
+  justify-content:center;
+  flex-direction:column;
+}
+
 .dashboard-date-btn {
-  background-color: #ffe5b4;
-  flex-grow:4;
+  border-color:black;
+  border-width:2px;
+}
+.dashboard-curr-date {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius:0.375rem;
+  border-style:solid;
+  border-color:black;
+  border-width:2px;
+  padding-left:24px;
+  padding-right:24px;
+  margin-left:4px;
+  margin-right:4px;
+
 }
 
 .bottom-button {
@@ -20,13 +45,14 @@
 .dashboard-date-select {
   display:flex;
   align-self:center;
+  justify-content:center;
 }
 
 .home-btn {
   background:black;
   color:white;
-  width:100%;
   align-self:center;
+  margin-top:12px;
 }
 .routes {
   width:100%;
