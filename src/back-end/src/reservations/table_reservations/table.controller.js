@@ -12,6 +12,7 @@ const VALID_PROPERTIES = [
   "table_name",
   "capacity",
   "reservation_id",
+  "first_name",
   "table_id",
 ];
 
@@ -152,9 +153,14 @@ function read(req, res) {
 }
 
 async function update(req, res, next) {
+  const { reservation_id } = req.body.data;
+
+  const { first_name } = await reservationService.read(reservation_id);
+
   const updatedTable = {
     ...res.locals.table,
     reservation_id: req.body.data.reservation_id,
+    first_name: first_name,
   };
 
   res.locals.updatedTable = updatedTable;
@@ -165,7 +171,7 @@ async function update(req, res, next) {
 }
 
 async function destroy(req, res) {
-  const updatedTable = { ...res.locals.table, reservation_id: null };
+  const updatedTable = { ...res.locals.table, reservation_id: null, first_name: null };
 
   const reservation = await reservationService.read(
     res.locals.table.reservation_id

@@ -2,18 +2,16 @@
   margin:20px
 }
 
-.bottom-button {
-  margin-bottom: 10px;
-  background-color:#ffe5b4;
-  width:100%;
-}
-
 .bottom-button-cancel {
 width:100%;
 }
 
 .desk-card {
   width:100%;
+}
+
+.new-reservation {
+  margin:30px;
 }
 
 

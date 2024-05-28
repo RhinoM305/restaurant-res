@@ -1,10 +1,4 @@
-.bottom-button {
-  background-color:#ffe5b4;
-}
 
-.bottom-button-cancel {
-  background-color:red;
-}
 
 .tables-reservation-form-buttons {
   margin-top:20px;
@@ -21,6 +15,9 @@
 .table-titles {
   display:flex;
   flex-direction:column;
+}
+.tables-form {
+  margin:30px;
 }
 @media (min-width: 768px) {
 

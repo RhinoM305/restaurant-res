@@ -38,8 +38,9 @@ main h2 {
 
 .bottom-button {
   margin-bottom: 10px;
-  background-color:#ffe5b4;
   width:100%;
+  border-width:1px;
+  border-color:black;
 }
 
 .dashboard-date-select {
@@ -59,7 +60,8 @@ main h2 {
 }
 
 .search-div {
-  margin:20px;
+  padding:20px;
+  margin-bottom:40px;
 }
 
 title {
@@ -102,11 +104,9 @@ title {
   }
 
   .dashboard-date-btn {
-    background-color: #ffe5b4;
     flex-grow:0;
     margin-right:10px;
     margin-bottom:10px;
-    width:190px;
   }
   .home-btn {
     width:auto;

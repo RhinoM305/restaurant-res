@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
+
 import {
   getAllTableReservations,
   deleteTableReservation,
 } from "../../utils/api";
+import { BsFillPersonFill } from "react-icons/bs";
+import { IconContext } from "react-icons";
+
 import ErrorAlert from "../ErrorAlert";
 
 import "./tables.css";
+import { IconBase } from "react-icons/lib";
 
 function DisplayTableReservations({ refreshDashboard }) {
   const [tables, setTables] = useState();
@@ -41,21 +46,26 @@ function DisplayTableReservations({ refreshDashboard }) {
   const list = () => {
     if (tables) {
       return tables.map((table) => {
+        let backgroundColor = table.reservation_id ? "#52CC7A" : "gray"
         return (
           <div className="card tables-cards" key={table.table_id}>
-            <div className="card-header" style={{ backgroundColor: "black" }}>
+            <div className="card-header" style={{ backgroundColor: backgroundColor }}>
               <h5 className="card-title" style={{ color: "white" }}>
                 {table.table_name}
               </h5>
             </div>
             <div className="card-body table-cancel">
+              <IconContext.Provider value={{size:"1.35em"}}>
+                <p className=""><BsFillPersonFill/> { table.first_name }</p>
+              </IconContext.Provider>
+              <hr/>
               <p>Capacity: {table.capacity}</p>
               <p data-table-id-status={table.table_id}>
-                {table.reservation_id ? "occupied" : "free"}
+                {table.reservation_id ? <p className="badge badge-danger">occupied</p> : <p className="badge badge-success">unoccupied</p>}
               </p>
               {table.reservation_id && (
                 <button
-                  className="btn bottom-button-cancel"
+                  className="btn btn-danger bottom-button-cancel"
                   onClick={(event) =>
                     handleTableFinish(event, table.reservation_id)
                   }
@@ -72,7 +82,7 @@ function DisplayTableReservations({ refreshDashboard }) {
     }
   };
   return (
-    <div className="table-titles">
+    <div className="table-titles mt-5">
       <h2 className="tables-title" style={{ alignSelf: "center" }}>
         Table Reservations
       </h2>

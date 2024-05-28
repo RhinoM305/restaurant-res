@@ -51,7 +51,8 @@ function Dashboard({ date }) {
             </button>
             <div
               className="dashboard-curr-date"
-            >{today.format("YYYY-MM-DD")}</div>
+            >{today.format("YYYY-MM-DD")}
+            </div>
             <button
               onClick={() => clickHandler("next", next.format("YYYY-MM-DD"))}
               className="btn dashboard-date-btn"
@@ -66,7 +67,7 @@ function Dashboard({ date }) {
               history.push(`/dashboard`);
             }}
           >
-            Check Today's Reservations: {moment().format("YYYY-MM-DD")}
+            Today's Reservations: {moment().format("YYYY-MM-DD")}
           </button>
         </div>
       </React.Fragment>
