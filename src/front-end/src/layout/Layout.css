@@ -11,6 +11,7 @@ main h2 {
   justify-content: center;
 }
 
+
 .dashboard-buttons {
   display:flex;
   justify-content:center;
@@ -64,14 +65,30 @@ main h2 {
   margin-bottom:40px;
 }
 
+.reservations-for-today {
+  margin-top:50px;
+}
+
 title {
   display:flex;
   justify-content:center;
 }
 
-
-
 @media (min-width: 768px) {
+
+  .reservations-for-today {
+    margin-top:0px;
+  }
+
+  .entire-div {
+    height:100vh;
+  }
+
+  main h2 {
+    margin-top:10px;
+    margin-left:10px;
+    justify-content:flex-start;
+  }
 
   title {
     background-color:white;
@@ -81,6 +98,29 @@ title {
     margin:0;
     
   }
+
+  .reservation-tables-div {
+    margin-top:50px;
+    display:flex;
+  }
+
+  .list-reservation {
+    display:flex;
+    flex-wrap: wrap;
+    justify-content:center;
+    overflow-y: auto;  
+    height:63vh;
+    padding-left:5%;
+    padding-right:5%;
+  }
+
+  .reservation-card {
+    width:45%;
+    margin-left:5px;
+    margin-right:5px;
+  }
+
+
 
   .dashboard-buttons {
     display:flex;
@@ -103,15 +143,20 @@ title {
     position:relative;
   }
 
-  .dashboard-date-btn {
-    flex-grow:0;
-    margin-right:10px;
-    margin-bottom:10px;
-  }
+
   .home-btn {
     width:auto;
   }
+
 }
 
 
 
+@media (min-width: 1204px) {
+
+  .reservation-card {
+    width:25%;
+    /* margin-left:1px; */
+    /* margin-right:1px; */
+  }
+}

@@ -89,12 +89,14 @@ function Dashboard({ date }) {
   }
 
   return (
-    <main>
+    <main className="test">
       <h2 className="mb-4">Dashboard</h2>
       {dateDisplay()}
-      <div className="mb-3">
+      <div className="reservation-tables-div">
+      <div className="reservation-side">
+        <div className="mb-3">
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <h4 className="mt-5">Reservations for today</h4>
+          <h4 className="reservations-for-today">Reservations for today</h4>
         </div>
       </div>
       <ErrorAlert error={error} />
@@ -105,7 +107,10 @@ function Dashboard({ date }) {
           setError={setError}
         />
       )}
+      </div>
       <DisplayTableReservations refreshDashboard={loadDashboard} />
+      </div>
+      
     </main>
   );
 }

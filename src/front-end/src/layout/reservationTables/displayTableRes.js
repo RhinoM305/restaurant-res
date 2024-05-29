@@ -82,9 +82,9 @@ function DisplayTableReservations({ refreshDashboard }) {
     }
   };
   return (
-    <div className="table-titles mt-5">
-      <h2 className="tables-title" style={{ alignSelf: "center" }}>
-        Table Reservations
+    <div className="table-titles">
+      <h2 className="" style={{ alignSelf: "center" }}>
+        Tables
       </h2>
       <ErrorAlert error={error} />
       <div className="bottom-tables">{list()}</div>

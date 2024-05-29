@@ -14,7 +14,7 @@ import "./Layout.css";
 
 function Layout() {
   return (
-    <div className="container-fluid background">
+    <div className="container-fluid background entire-div">
       {/* <title>
         <h1>periodic tables</h1>
       </title> */}

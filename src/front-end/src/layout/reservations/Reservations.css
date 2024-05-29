@@ -6,13 +6,11 @@
 width:100%;
 }
 
-.desk-card {
-  width:100%;
-}
-
 .new-reservation {
   margin:30px;
 }
+
+
 
 
 @media (min-width: 780px) {
@@ -32,15 +30,4 @@ width:100%;
     align-self:center;
   }
 
-  .desk-card {
-    width:auto;
-    margin:4px;
-  }
-
-  .list-reservation {
-    background:#A2ABAB;
-    display:flex;
-    justify-content:center;
-    flex-wrap: wrap;
-  }
 }

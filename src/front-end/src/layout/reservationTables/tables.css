@@ -15,15 +15,41 @@
 .table-titles {
   display:flex;
   flex-direction:column;
+  margin-top:40px;
 }
 .tables-form {
   margin:30px;
 }
 @media (min-width: 768px) {
 
+  .table-titles h2 {
+    font-size: large;
+  }
+
+  .table-titles {
+    margin-top:0px;
+    height:70vh;
+    width:30%;
+  }
+
+  .reservation-side {
+    width:70%;
+    height:70vh;
+  }
+
+  .bottom-tables {
+    margin-bottom:0px;
+    overflow-y: auto;  
+    height:63vh;
+  }
+
   .seat-form {
     display:flex;
     justify-content:center;
+  }
+
+  .tables-cards {
+    margin:10px;
   }
 
   .tables-form {
@@ -39,8 +65,8 @@
 
   .bottom-tables {
     display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
+    flex-direction:column;
+    background-color:rgb(237, 237, 237);
   }
 
   .bottom-button {
