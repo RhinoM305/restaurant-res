@@ -81,7 +81,7 @@ function SeatParty() {
           </button>
           <button
             className="btn bottom-button-cancel"
-            onClick={() => history.goBack()}
+            onClick={() => history.push("/dashboard")}
           >
             Cancel
           </button>

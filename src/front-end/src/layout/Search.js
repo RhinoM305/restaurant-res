@@ -31,7 +31,7 @@ function Search() {
   return (
     <div className="search-div">
       <h4 style={{ whiteSpace: "nowrap" }}>
-        Search for reservation by number:
+        Search for reservation:
       </h4>
       <form onSubmit={submitHandler} className="seat-form">
         <input
@@ -45,7 +45,7 @@ function Search() {
             setNumber(formattedPhoneNumber);
           }}
         />
-        <button type="submit" className="btn bottom-button">
+        <button type="submit" className="btn bottom-button mt-3">
           Find
         </button>
       </form>

@@ -55,8 +55,8 @@ function NewTable() {
             submit
           </button>
           <button
-            className="btn bottom-button-cancel"
-            onClick={() => history.goBack()}
+            className="btn btn-danger bottom-button-cancel"
+            onClick={() => history.push("/dashboard")}
           >
             cancel
           </button>
