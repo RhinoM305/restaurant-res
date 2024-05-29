@@ -4,6 +4,8 @@ import ErrorAlert from "./ErrorAlert";
 import { useHistory } from "react-router-dom";
 import DisplayTableReservations from "./reservationTables/displayTableRes";
 import ListReservations from "./reservations/ListReservations";
+import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+
 
 import "./Layout.css";
 
@@ -45,13 +47,17 @@ function Dashboard({ date }) {
               onClick={() => clickHandler("prev", prev.format("YYYY-MM-DD"))}
               className="btn dashboard-date-btn"
             >
-              {`Previous: ${prev.format("YYYY-MM-DD") || "-----------"}`}
+              <BsChevronLeft/>
             </button>
+            <div
+              className="dashboard-curr-date"
+            >{today.format("YYYY-MM-DD")}
+            </div>
             <button
               onClick={() => clickHandler("next", next.format("YYYY-MM-DD"))}
               className="btn dashboard-date-btn"
             >
-              {`Next: ${next.format("YYYY-MM-DD") || "-----------"}`}
+              <BsChevronRight/>
             </button>
           </div>
           <button
@@ -83,12 +89,14 @@ function Dashboard({ date }) {
   }
 
   return (
-    <main>
-      <h2 className="ml-2">Dashboard</h2>
+    <main className="test">
+      <h2 className="mb-4">Dashboard</h2>
       {dateDisplay()}
-      <div className="mb-3">
+      <div className="reservation-tables-div">
+      <div className="reservation-side">
+        <div className="mb-3">
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <h4 className="mb-0">Reservations for today</h4>
+          <h4 className="reservations-for-today">Reservations for today</h4>
         </div>
       </div>
       <ErrorAlert error={error} />
@@ -99,7 +107,10 @@ function Dashboard({ date }) {
           setError={setError}
         />
       )}
+      </div>
       <DisplayTableReservations refreshDashboard={loadDashboard} />
+      </div>
+      
     </main>
   );
 }

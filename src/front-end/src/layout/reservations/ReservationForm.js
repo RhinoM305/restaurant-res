@@ -112,8 +112,8 @@ function ReservationForm({
         <button
           type="button"
           data-reservation-id-cancel={reservationForm.reservation_id}
-          className="btn bottom-button-cancel"
-          onClick={() => history.goBack()}
+          className="btn btn-danger bottom-button-cancel"
+          onClick={() => history.push("/dashboard")}
         >
           cancel
         </button>

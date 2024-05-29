@@ -18,6 +18,18 @@ function ListReservations({ data, show = false, load, setError }) {
     }
   }
 
+  //set assignReservationColor determines which color too highlight 
+  //the text status with. Im using bootstraps alert.
+  function assignReservationColor(status) {
+    if(status === "booked") return "badge badge-warning";
+    if(status === "seated") {
+      return "badge badge-danger";
+    } else {
+      return "badge badge-success"
+    }
+  
+  }
+
   const list = data.map((reservation) => {
     if (
       (reservation.status === "finished" && !show) ||
@@ -27,7 +39,7 @@ function ListReservations({ data, show = false, load, setError }) {
     }
 
     return (
-      <div className="card desk-card" key={reservation.reservation_id}>
+      <div className="card my-2 reservation-card" key={reservation.reservation_id}>
         <div className="card-body">
           <h5 className="card-title">Reservation: {reservation.first_name}</h5>
           <p>Last Name: {reservation.last_name}</p>
@@ -35,7 +47,7 @@ function ListReservations({ data, show = false, load, setError }) {
           <p>Date: {reservation.reservation_date}</p>
           <p>Time: {reservation.reservation_time}</p>
           <p>People: {reservation.people}</p>
-          <p data-reservation-id-status={reservation.reservation_id}>
+          <p data-reservation-id-status={reservation.reservation_id} className={assignReservationColor(reservation.status)}>
             {reservation.status}
           </p>
           <div className="reservation-form-btn">
